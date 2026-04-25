@@ -64,11 +64,3 @@ This is not a settled claim. The goal of this project is to collect the data and
 5. **Aggregate** into zone bins for heatmap rendering
 6. **Compare** home vs. away, both teams on home ice, and against league averages
 7. **Visualize** with D3.js: interactive rink diagram with heatmap and scatter overlays
-
-## Conclusion
-
-## Questions to ask.. 
-What is characterized as "front of the home bench" for these numbers?
-Should this be a movable "goalie viewpoint" for dynamic analysis and simulated vision? 
-Should this be just that "quarter" of the ice? 
-We should split up the data to account for only shots (home and away) on the home side of the ice.

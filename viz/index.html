@@ -13,7 +13,10 @@
 
   <header>
     <div class="header-inner">
-      <div class="mammoth-mark">M</div>
+      <img src="https://assets.nhle.com/logos/nhl/svg/UTA_light.svg"
+           alt="Utah Mammoth"
+           class="team-logo"
+           onerror="this.style.display='none'">
       <div>
         <h1>Utah Mammoth</h1>
         <p class="subtitle">Home Ice Shot Location Study</p>
@@ -22,9 +25,23 @@
     <p class="hypothesis">
       Do shots from in front of the home bench convert at a higher rate — for <em>both</em> teams?
     </p>
+    <!-- Mobile menu trigger -->
+    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open options">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
-  <div class="controls">
+  <!-- Backdrop for mobile sheet -->
+  <div class="sheet-overlay" id="sheet-overlay"></div>
+
+  <div class="controls" id="controls">
+    <!-- Sheet header: only visible on mobile -->
+    <div class="sheet-header">
+      <div class="sheet-handle"></div>
+      <span class="sheet-title">Options</span>
+      <button class="sheet-close-btn" id="sheet-close">Done</button>
+    </div>
+
     <div class="control-group">
       <label>Shooter</label>
       <div class="btn-group" id="filter-shooter">
@@ -55,6 +72,19 @@
         <button class="btn" data-value="volume">Shot Volume</button>
       </div>
     </div>
+    <div class="control-group">
+      <label>Zone Analysis</label>
+      <div class="btn-group" id="filter-select">
+        <button class="btn active" data-value="off">Off</button>
+        <button class="btn" data-value="on">Select Zones</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="select-status" id="select-status">
+    <strong id="select-count">0 zones selected</strong>
+    <span id="select-hint">Click hexes on the map — stats will compare selected zone vs rest of ice</span>
+    <button class="btn-clear" id="btn-clear-selection">Clear</button>
   </div>
 
   <div class="viz-wrapper">
@@ -76,27 +106,27 @@
   <div class="stats-bar">
     <div class="stat">
       <span class="stat-value" id="stat-shots">—</span>
-      <span class="stat-label">Shots on Goal</span>
+      <span class="stat-label" id="label-shots">Shots on Goal</span>
     </div>
     <div class="stat">
       <span class="stat-value" id="stat-goals">—</span>
-      <span class="stat-label">Goals</span>
+      <span class="stat-label" id="label-goals">Goals</span>
     </div>
     <div class="stat">
       <span class="stat-value" id="stat-rate">—</span>
-      <span class="stat-label">Overall Rate</span>
+      <span class="stat-label" id="label-rate">Overall Rate</span>
     </div>
     <div class="stat bench-stat">
       <span class="stat-value" id="stat-bench-rate">—</span>
-      <span class="stat-label">Bench Side Rate</span>
+      <span class="stat-label" id="label-bench-rate">Bench Side Rate</span>
     </div>
     <div class="stat">
       <span class="stat-value" id="stat-far-rate">—</span>
-      <span class="stat-label">Far Side Rate</span>
+      <span class="stat-label" id="label-far-rate">Far Side Rate</span>
     </div>
     <div class="stat">
       <span class="stat-value" id="stat-diff">—</span>
-      <span class="stat-label">Difference</span>
+      <span class="stat-label" id="label-diff">Difference</span>
     </div>
   </div>
 

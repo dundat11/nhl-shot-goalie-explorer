@@ -27,6 +27,7 @@ body {
 
 /* ── Header ── */
 header {
+  position: relative;
   text-align: center;
   padding: 2.5rem 1rem 1.5rem;
   border-bottom: 1px solid var(--border);
@@ -40,19 +41,12 @@ header {
   margin-bottom: 0.75rem;
 }
 
-.mammoth-mark {
-  width: 44px;
-  height: 44px;
-  background: var(--gold);
-  color: #000;
-  border-radius: 8px;
-  font-size: 1.5rem;
-  font-weight: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  letter-spacing: -0.02em;
+.team-logo {
+  height: 52px;
+  width: auto;
+  display: block;
 }
+
 
 h1 {
   font-size: 1.75rem;
@@ -86,13 +80,47 @@ h1 {
   font-weight: 600;
 }
 
-/* ── Controls ── */
+/* ── Mobile menu button (hidden on desktop) ── */
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+}
+.mobile-menu-btn span {
+  display: block;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.mobile-menu-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
+.mobile-menu-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Controls (desktop inline / mobile bottom sheet) ── */
 .controls {
   display: flex;
   justify-content: center;
   gap: 1.5rem;
   padding: 0 1rem 1.5rem;
   flex-wrap: wrap;
+}
+
+/* Sheet header — hidden on desktop */
+.sheet-header {
+  display: none;
 }
 
 .control-group {
@@ -132,17 +160,8 @@ h1 {
   transition: all 0.12s;
   white-space: nowrap;
 }
-
-.btn:hover {
-  color: var(--text);
-  background: var(--surface2);
-}
-
-.btn.active {
-  background: var(--gold);
-  color: #000;
-  font-weight: 700;
-}
+.btn:hover { color: var(--text); background: var(--surface2); }
+.btn.active { background: var(--gold); color: #fff; font-weight: 700; }
 
 /* ── Viz wrapper ── */
 .viz-wrapper {
@@ -159,10 +178,7 @@ h1 {
   position: relative;
 }
 
-#rink {
-  width: 100%;
-  display: block;
-}
+#rink { width: 100%; display: block; }
 
 .bench-callout {
   display: flex;
@@ -193,11 +209,7 @@ h1 {
   color: var(--text-muted);
 }
 
-.legend-bar {
-  width: 160px;
-  height: 10px;
-  border-radius: 3px;
-}
+.legend-bar { width: 160px; height: 10px; border-radius: 3px; }
 
 .legend-title {
   font-size: 0.65rem;
@@ -231,9 +243,7 @@ h1 {
   flex: 1;
 }
 
-.stat.bench-stat {
-  border-color: var(--bench-color);
-}
+.stat.bench-stat { border-color: var(--bench-color); }
 
 .stat-value {
   font-size: 1.4rem;
@@ -242,9 +252,7 @@ h1 {
   line-height: 1;
 }
 
-.stat.bench-stat .stat-value {
-  color: var(--bench-color);
-}
+.stat.bench-stat .stat-value { color: var(--bench-color); }
 
 .stat-label {
   font-size: 0.62rem;
@@ -265,16 +273,11 @@ h1 {
   opacity: 0;
   transition: opacity 0.12s;
   color: var(--text);
-  z-index: 100;
+  z-index: 300;
   min-width: 130px;
   line-height: 1.6;
 }
-
-.tooltip strong {
-  color: var(--gold);
-  display: block;
-  margin-bottom: 0.15rem;
-}
+.tooltip strong { color: var(--gold); display: block; margin-bottom: 0.15rem; }
 
 /* ── Rink SVG elements ── */
 .rink-ice { fill: #d8eef7; }
@@ -286,11 +289,7 @@ h1 {
 .rink-crease { fill: #b8d9ef; opacity: 0.8; stroke: #2980b9; stroke-width: 0.3; }
 .rink-net { fill: #888; }
 .rink-dot { fill: #d63031; opacity: 0.75; }
-.rink-bench-line {
-  stroke: #2E6DB4;
-  stroke-width: 2;
-  stroke-linecap: round;
-}
+.rink-bench-line { stroke: #2E6DB4; stroke-width: 2; stroke-linecap: round; }
 .rink-bench-label {
   font-family: 'Inter', sans-serif;
   font-size: 3.2px;
@@ -300,13 +299,206 @@ h1 {
 }
 
 /* ── Hexbin cells ── */
-.hex-cell {
-  transition: opacity 0.2s;
-}
+.hex-cell { transition: opacity 0.2s; }
 .hex-cell:hover { opacity: 1 !important; }
+.select-mode .hex-cell { cursor: crosshair; }
+.hex-cell.dimmed   { opacity: 0.25 !important; }
+.hex-cell.selected { stroke: #fff; stroke-width: 0.8; opacity: 1 !important; }
+
+/* ── Selection status bar ── */
+.select-status {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  max-width: 860px;
+  margin: 0.75rem auto 0;
+  flex-wrap: wrap;
+}
+.select-status.visible { display: flex; }
+.select-status strong { color: var(--gold); }
+
+.btn-clear {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.25rem 0.65rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-family: inherit;
+  transition: all 0.12s;
+}
+.btn-clear:hover { border-color: var(--text-muted); color: var(--text); }
 
 /* ── Scatter dots ── */
-.shot-dot {
-  transition: r 0.15s;
-}
+.shot-dot { transition: r 0.15s; }
 .shot-dot:hover { r: 2.5; }
+
+/* ══════════════════════════════════════════════════════
+   MOBILE — bottom sheet controls
+   ══════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  body { padding-bottom: 1rem; }
+
+  header {
+    padding: 1.25rem 3.5rem 1rem 1rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .header-inner { margin-bottom: 0; }
+
+  h1 { font-size: 1.3rem; }
+
+  .hypothesis { font-size: 0.78rem; margin: 0; max-width: none; }
+
+  /* Show hamburger */
+  .mobile-menu-btn { display: flex; }
+
+  /* Controls become a fixed bottom sheet */
+  .controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    padding: 0 1.25rem 2rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.25rem;
+    transform: translateY(100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .controls.open { transform: translateY(0); }
+
+  /* Sheet header visible on mobile */
+  .sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0 0.25rem;
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 1;
+  }
+
+  .sheet-handle {
+    position: absolute;
+    left: 50%;
+    top: -1rem;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  .sheet-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+
+  .sheet-close-btn {
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  /* Control groups fill width on mobile */
+  .control-group {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .control-group label {
+    font-size: 0.72rem;
+    text-align: left;
+    min-width: 80px;
+  }
+
+  .btn-group { flex: 1; justify-content: flex-end; }
+
+  .btn { padding: 0.45rem 0.75rem; font-size: 0.8rem; }
+
+  /* Overlay backdrop */
+  .sheet-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 199;
+    backdrop-filter: blur(2px);
+  }
+  .sheet-overlay.visible { display: block; }
+
+  /* Stats: 3-column grid */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 1rem 0.75rem 0;
+    gap: 0.4rem;
+  }
+
+  .stat {
+    min-width: 0;
+    padding: 0.6rem 0.5rem;
+  }
+
+  .stat-value { font-size: 1.1rem; }
+  .stat-label { font-size: 0.55rem; }
+
+  /* Selection status wraps better */
+  .select-status {
+    margin: 0.5rem 0.75rem 0;
+    font-size: 0.72rem;
+    gap: 0.5rem;
+  }
+
+  /* Viz padding */
+  .viz-wrapper { padding: 0 0.5rem; }
+}
+
+/* ── Landscape phone: keep rink wide, reduce vertical padding ── */
+@media (max-width: 900px) and (orientation: landscape) {
+  header { padding: 0.75rem 3.5rem 0.75rem 1rem; }
+  .hypothesis { display: none; }
+  .viz-wrapper { padding: 0 0.5rem; }
+
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    padding: 0.5rem 0.5rem 0;
+    gap: 0.35rem;
+  }
+
+  .stat { padding: 0.4rem 0.4rem; }
+  .stat-value { font-size: 0.95rem; }
+  .stat-label { font-size: 0.5rem; }
+}
