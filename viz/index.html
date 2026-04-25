@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Utah Mammoth — Home Ice Shot Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="mammoth-mark">M</div>
+      <div>
+        <h1>Utah Mammoth</h1>
+        <p class="subtitle">Home Ice Shot Location Study</p>
+      </div>
+    </div>
+    <p class="hypothesis">
+      Do shots from in front of the home bench convert at a higher rate — for <em>both</em> teams?
+    </p>
+  </header>
+
+  <div class="controls">
+    <div class="control-group">
+      <label>Shooter</label>
+      <div class="btn-group" id="filter-shooter">
+        <button class="btn active" data-value="all">All</button>
+        <button class="btn" data-value="utah">Utah</button>
+        <button class="btn" data-value="opponent">Opponent</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <label>Season</label>
+      <div class="btn-group" id="filter-season">
+        <button class="btn active" data-value="all">Both</button>
+        <button class="btn" data-value="20242025">2024–25</button>
+        <button class="btn" data-value="20252026">2025–26</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <label>View</label>
+      <div class="btn-group" id="filter-view">
+        <button class="btn active" data-value="heatmap">Heatmap</button>
+        <button class="btn" data-value="scatter">Scatter</button>
+      </div>
+    </div>
+    <div class="control-group">
+      <label>Metric</label>
+      <div class="btn-group" id="filter-metric">
+        <button class="btn active" data-value="rate">Conversion Rate</button>
+        <button class="btn" data-value="volume">Shot Volume</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-wrapper">
+    <div class="rink-container">
+      <svg id="rink"></svg>
+      <div class="bench-callout">
+        <span class="callout-dot"></span>Home bench (left, broadcast view)
+      </div>
+    </div>
+
+    <div class="legend" id="legend">
+      <div class="legend-label low">Low</div>
+      <div class="legend-bar" id="legend-bar"></div>
+      <div class="legend-label high">High</div>
+      <div class="legend-title" id="legend-title">Conversion Rate</div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-value" id="stat-shots">—</span>
+      <span class="stat-label">Shots on Goal</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="stat-goals">—</span>
+      <span class="stat-label">Goals</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="stat-rate">—</span>
+      <span class="stat-label">Overall Rate</span>
+    </div>
+    <div class="stat bench-stat">
+      <span class="stat-value" id="stat-bench-rate">—</span>
+      <span class="stat-label">Bench Side Rate</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="stat-far-rate">—</span>
+      <span class="stat-label">Far Side Rate</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="stat-diff">—</span>
+      <span class="stat-label">Difference</span>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

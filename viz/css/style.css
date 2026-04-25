@@ -1,0 +1,312 @@
+/* Utah Mammoth — Shot Study Visualization */
+
+:root {
+  --gold: #2E6DB4;
+  --gold-light: #5592d0;
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --surface2: #1e1e1e;
+  --border: #2a2a2a;
+  --text: #e8e8e8;
+  --text-muted: #666;
+  --text-dim: #444;
+  --hot: #ff4d00;
+  --cold: #1a6fba;
+  --bench-color: #2E6DB4;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 3rem;
+}
+
+/* ── Header ── */
+header {
+  text-align: center;
+  padding: 2.5rem 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.header-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.mammoth-mark {
+  width: 44px;
+  height: 44px;
+  background: var(--gold);
+  color: #000;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+  text-align: left;
+  line-height: 1;
+}
+
+.subtitle {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: left;
+  margin-top: 0.2rem;
+}
+
+.hypothesis {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.hypothesis em {
+  color: var(--text);
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* ── Controls ── */
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0 1rem 1.5rem;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.control-group label {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.btn-group {
+  display: flex;
+  gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 2px;
+}
+
+.btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.35rem 0.85rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-family: inherit;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  color: var(--text);
+  background: var(--surface2);
+}
+
+.btn.active {
+  background: var(--gold);
+  color: #000;
+  font-weight: 700;
+}
+
+/* ── Viz wrapper ── */
+.viz-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem;
+}
+
+.rink-container {
+  width: 100%;
+  max-width: 860px;
+  position: relative;
+}
+
+#rink {
+  width: 100%;
+  display: block;
+}
+
+.bench-callout {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--bench-color);
+  letter-spacing: 0.08em;
+  margin-top: 0.4rem;
+  padding-left: 0.25rem;
+  opacity: 0.8;
+}
+
+.callout-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bench-color);
+  flex-shrink: 0;
+}
+
+/* ── Legend ── */
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.legend-bar {
+  width: 160px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legend-title {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-left: 0.5rem;
+}
+
+/* ── Stats bar ── */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem 0;
+  flex-wrap: wrap;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 110px;
+  flex: 1;
+}
+
+.stat.bench-stat {
+  border-color: var(--bench-color);
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.stat.bench-stat .stat-value {
+  color: var(--bench-color);
+}
+
+.stat-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+/* ── Tooltip ── */
+.tooltip {
+  position: fixed;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.75rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s;
+  color: var(--text);
+  z-index: 100;
+  min-width: 130px;
+  line-height: 1.6;
+}
+
+.tooltip strong {
+  color: var(--gold);
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+/* ── Rink SVG elements ── */
+.rink-ice { fill: #d8eef7; }
+.rink-boards { fill: none; stroke: #8899aa; stroke-width: 0.8; }
+.rink-red-line { fill: #d63031; opacity: 0.75; }
+.rink-blue-line { fill: #2980b9; opacity: 0.8; }
+.rink-goal-line { fill: none; stroke: #d63031; stroke-width: 0.5; opacity: 0.75; }
+.rink-circle { fill: none; stroke: #d63031; stroke-width: 0.45; opacity: 0.55; }
+.rink-crease { fill: #b8d9ef; opacity: 0.8; stroke: #2980b9; stroke-width: 0.3; }
+.rink-net { fill: #888; }
+.rink-dot { fill: #d63031; opacity: 0.75; }
+.rink-bench-line {
+  stroke: #2E6DB4;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.rink-bench-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 3.2px;
+  fill: #2E6DB4;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* ── Hexbin cells ── */
+.hex-cell {
+  transition: opacity 0.2s;
+}
+.hex-cell:hover { opacity: 1 !important; }
+
+/* ── Scatter dots ── */
+.shot-dot {
+  transition: r 0.15s;
+}
+.shot-dot:hover { r: 2.5; }
