@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 import { drawRink } from './rink.js'
 import { initLayers, renderHeatmap, renderScatter, setSelectMode, clearSelection, getSelectionStats } from './heatmap.js'
 
-const DATA_PATH = '/shots_viz.json'
+const DATA_PATH = `${import.meta.env.BASE_URL}shots_viz.json`
 
 // ── SVG ───────────────────────────────────────────────────────────────────────
 const PADDING = 5
