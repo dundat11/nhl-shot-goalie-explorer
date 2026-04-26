@@ -27,6 +27,10 @@ def load_shots() -> pd.DataFrame:
     df = df[df["periodType"].isin(["REG", "OT"])]
     # Only shots on goal and goals for conversion rate analysis
     df = df[df["isOnGoal"]].copy()
+    # NHL API uses positive y toward the top of the broadcast image (mathematical convention).
+    # SVG renders positive y downward, so we negate y here so that display coordinates
+    # match the SVG: y < 0 = top of SVG = bench side (top of broadcast).
+    df["y"] = -df["y"]
     return df
 
 
@@ -82,12 +86,12 @@ def main():
         json.dump(zones, f, indent=2)
     print(f"Wrote zone stats ({len(zones)} zone records) to {ZONES_OUT}")
 
-    # Quick summary
+    # Quick summary — bench side = top of broadcast (y > 0 in NHL API = y < 0 after negation, x < 0)
     bench_side = df[df["isHomeBenchSide"]]
     other_side = df[~df["isHomeBenchSide"]]
-    print(f"\nHome bench side (x < 0): {len(bench_side)} shots, "
+    print(f"\nHome bench side (top boards, left): {len(bench_side)} shots, "
           f"{bench_side['isGoal'].mean():.3f} conversion rate")
-    print(f"Other side (x > 0):      {len(other_side)} shots, "
+    print(f"Rest of ice:                        {len(other_side)} shots, "
           f"{other_side['isGoal'].mean():.3f} conversion rate")
 
 
