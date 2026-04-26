@@ -1,8 +1,9 @@
 import * as d3 from 'd3'
 import { hexbin as d3Hexbin } from 'd3-hexbin'
 
-const HEX_RADIUS = 4.5
-const MIN_SHOTS  = 4
+const HEX_RADIUS  = 4.5
+const MIN_SHOTS   = 4   // full-season threshold
+const MIN_SHOTS_1 = 1   // single-game threshold
 
 let hexLayer        = null
 let scatterLayer    = null
@@ -56,8 +57,8 @@ export function getSelectionStats() {
 
 // ── Color scales ──────────────────────────────────────────────────────────────
 
-function buildRateScale(bins) {
-  const rates = bins.filter(b => b.shots >= MIN_SHOTS).map(b => b.rate)
+function buildRateScale(bins, minShots = MIN_SHOTS) {
+  const rates = bins.filter(b => b.shots >= minShots).map(b => b.rate)
   if (!rates.length) return null
   const sorted = [...rates].sort(d3.ascending)
   return d3.scaleSequential(
@@ -66,8 +67,8 @@ function buildRateScale(bins) {
   )
 }
 
-function buildVolumeScale(bins) {
-  const vols = bins.filter(b => b.shots >= MIN_SHOTS).map(b => b.shots)
+function buildVolumeScale(bins, minShots = MIN_SHOTS) {
+  const vols = bins.filter(b => b.shots >= minShots).map(b => b.shots)
   if (!vols.length) return null
   const sorted = [...vols].sort(d3.ascending)
   return d3.scaleSequential([0, d3.quantile(sorted, 0.95)], d3.interpolatePlasma)
@@ -133,9 +134,11 @@ function _toggleHex(d) {
 export function renderHeatmap(shots, metric, tooltip) {
   scatterLayer.selectAll('*').remove()
 
-  const bins       = computeBins(shots.filter(d => d.isOnGoal))
+  const onGoal   = shots.filter(d => d.isOnGoal)
+  const minShots = onGoal.length < 150 ? MIN_SHOTS_1 : MIN_SHOTS
+  const bins       = computeBins(onGoal)
   currentBins      = bins
-  const colorScale = metric === 'rate' ? buildRateScale(bins) : buildVolumeScale(bins)
+  const colorScale = metric === 'rate' ? buildRateScale(bins, minShots) : buildVolumeScale(bins, minShots)
   renderLegend(colorScale, metric)
 
   // Clear stale selections when data refreshes
@@ -151,14 +154,14 @@ export function renderHeatmap(shots, metric, tooltip) {
       .attr('class', 'hex-cell')
       .attr('transform', d => `translate(${d.x},${d.y})`)
       .attr('d',       d => d.path)
-      .attr('fill',    d => d.shots >= MIN_SHOTS && colorScale ? colorScale(metric === 'rate' ? d.rate : d.shots) : 'transparent')
-      .attr('opacity', d => d.shots >= MIN_SHOTS ? 0.82 : 0)
+      .attr('fill',    d => d.shots >= minShots && colorScale ? colorScale(metric === 'rate' ? d.rate : d.shots) : 'transparent')
+      .attr('opacity', d => d.shots >= minShots ? 0.82 : 0)
       .on('click', (event, d) => {
-        if (!isSelectMode || d.shots < MIN_SHOTS) return
+        if (!isSelectMode || d.shots < minShots) return
         _toggleHex(d)
       })
       .on('mouseover', (event, d) => {
-        if (d.shots < MIN_SHOTS) return
+        if (d.shots < minShots) return
         const label = isSelectMode
           ? (selectedKeys.has(binKey(d)) ? 'Click to deselect' : 'Click to select')
           : `${(d.rate * 100).toFixed(1)}% conversion`
@@ -169,8 +172,8 @@ export function renderHeatmap(shots, metric, tooltip) {
       .on('mouseout',  () => tooltip.style('opacity', 0)),
 
     update => update
-      .attr('fill',    d => d.shots >= MIN_SHOTS && colorScale ? colorScale(metric === 'rate' ? d.rate : d.shots) : 'transparent')
-      .attr('opacity', d => d.shots >= MIN_SHOTS ? 0.82 : 0),
+      .attr('fill',    d => d.shots >= minShots && colorScale ? colorScale(metric === 'rate' ? d.rate : d.shots) : 'transparent')
+      .attr('opacity', d => d.shots >= minShots ? 0.82 : 0),
 
     exit => exit.remove()
   )

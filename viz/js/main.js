@@ -1,8 +1,9 @@
 import * as d3 from 'd3'
-import { drawRink } from './rink.js'
+import { drawRink, drawGrid, toggleGrid } from './rink.js'
 import { initLayers, renderHeatmap, renderScatter, setSelectMode, clearSelection, getSelectionStats } from './heatmap.js'
 
-const DATA_PATH = `${import.meta.env.BASE_URL}shots_viz.json`
+const DATA_PATH  = `${import.meta.env.BASE_URL}shots_viz.json`
+const GAMES_PATH = `${import.meta.env.BASE_URL}utah_home_games.csv`
 
 // ── SVG ───────────────────────────────────────────────────────────────────────
 const PADDING = 5
@@ -13,7 +14,7 @@ const svg = d3.select('#rink')
 const tooltip = d3.select('#tooltip')
 
 // ── State ─────────────────────────────────────────────────────────────────────
-const state = { shooter: 'all', season: 'all', view: 'heatmap', metric: 'rate', selectZone: false }
+const state = { shooter: 'all', season: 'all', view: 'heatmap', metric: 'rate', selectZone: false, grid: false, game: 'all' }
 
 // ── Filter ────────────────────────────────────────────────────────────────────
 function filterShots(all) {
@@ -21,6 +22,7 @@ function filterShots(all) {
     if (state.shooter === 'utah'     && !d.isUtahShooting) return false
     if (state.shooter === 'opponent' &&  d.isUtahShooting) return false
     if (state.season  !== 'all'      && String(d.season) !== state.season) return false
+    if (state.game    !== 'all'      && String(d.gameId)  !== state.game)  return false
     return true
   })
 }
@@ -127,6 +129,7 @@ function wireControls() {
     'filter-season':  'season',
     'filter-view':    'view',
     'filter-metric':  'metric',
+    'filter-grid':    'grid',
   }
 
   document.querySelectorAll('.btn-group').forEach(group => {
@@ -139,9 +142,12 @@ function wireControls() {
       const key = keyMap[group.id]
       if (key) {
         state[key] = btn.dataset.value
-        // Switching away from heatmap disables select zone
         if (key === 'view' && btn.dataset.value !== 'heatmap') {
           _setSelectZone(false)
+        }
+        if (key === 'grid') {
+          toggleGrid(gridLayer, btn.dataset.value === 'on')
+          return  // no data re-render needed for grid toggle
         }
         render()
       }
@@ -204,13 +210,39 @@ function wireMobileMenu() {
 }
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
+// Inject build version — values are replaced at build time by vite.config.js
+const _sha = __BUILD_SHA__ ? ` · ${__BUILD_SHA__}` : ''
+document.getElementById('build-info').textContent =
+  `v${__APP_VERSION__}${_sha} · ${__BUILD_DATE__}`
+
 drawRink(svg)
+const gridLayer = drawGrid(svg)  // sits between rink and data layers
 initLayers(svg)
 wireMobileMenu()
+wireControls()  // wire immediately — controls must work before data arrives
+
+// Load games list for the game selector dropdown
+d3.csv(GAMES_PATH).then(games => {
+  const sel = document.getElementById('filter-game')
+  games
+    .filter(g => g.gameState === 'OFF' || g.gameState === 'FINAL')
+    .sort((a, b) => b.date.localeCompare(a.date))  // newest first
+    .forEach(g => {
+      const opt = document.createElement('option')
+      opt.value = g.gameId
+      const season = g.season === '20242025' ? '24-25' : '25-26'
+      opt.textContent = `${g.date} · UTA vs ${g.awayTeam} (${season})`
+      sel.appendChild(opt)
+    })
+  sel.addEventListener('change', () => {
+    state.game = sel.value
+    clearSelection()
+    render()
+  })
+}).catch(() => {}) // games CSV is optional — dropdown just stays empty
 
 d3.json(DATA_PATH).then(all => {
   _allShots = all
-  wireControls()
   render()
 }).catch(err => {
   console.error('Failed to load shot data:', err)

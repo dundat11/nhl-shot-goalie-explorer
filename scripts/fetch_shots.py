@@ -92,10 +92,10 @@ def extract_shots(pbp: dict, game_meta: dict) -> list[dict]:
             "isUtahShooting": is_utah_shooting,
             "x": x,
             "y": y,
-            # Which side of center ice the shot came from (broadcast perspective)
-            "shotSide": "top" if y < 0 else "bottom",
-            # Home bench is along the top boards (y < 0) on the left side (x < 0)
-            "isHomeBenchSide": y < 0 and x < 0,
+            # NHL API uses positive y toward the top of the broadcast image.
+            # Bench is at the top of the broadcast (y > 0 in NHL coords, x < 0 for left/home side).
+            "shotSide": "bench" if y > 0 else "booth",
+            "isHomeBenchSide": y > 0 and x < 0,
             "shotType": details.get("shotType", ""),
             "isGoal": event_type == "goal",
             "isOnGoal": event_type in {"shot-on-goal", "goal"},

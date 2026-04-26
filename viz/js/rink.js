@@ -15,6 +15,41 @@ const RINK_DIMS = {
   netD:           2,
 }
 
+export function drawGrid(svg) {
+  const g = svg.append('g').attr('class', 'grid-layer').style('display', 'none')
+
+  // Vertical lines every 10 units (x axis)
+  for (let x = -100; x <= 100; x += 10) {
+    g.append('line')
+      .attr('class', x === 0 ? 'grid-axis' : 'grid-line')
+      .attr('x1', x).attr('y1', -42.5)
+      .attr('x2', x).attr('y2',  42.5)
+    g.append('text')
+      .attr('class', 'grid-label')
+      .attr('x', x).attr('y', -38.5)
+      .attr('text-anchor', 'middle')
+      .text(x)
+  }
+
+  // Horizontal lines every 10 units (y axis, display coords)
+  for (let y = -40; y <= 40; y += 10) {
+    g.append('line')
+      .attr('class', y === 0 ? 'grid-axis' : 'grid-line')
+      .attr('x1', -100).attr('y1', y)
+      .attr('x2',  100).attr('y2', y)
+    g.append('text')
+      .attr('class', 'grid-label')
+      .attr('x', -96).attr('y', y + 1.5)
+      .text(y)
+  }
+
+  return g
+}
+
+export function toggleGrid(gridLayer, on) {
+  gridLayer.style('display', on ? null : 'none')
+}
+
 export function drawRink(svg) {
   const g = svg.append('g').attr('class', 'rink-layer')
   const d = RINK_DIMS
