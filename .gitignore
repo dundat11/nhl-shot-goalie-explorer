@@ -1,7 +1,9 @@
 data/raw/
+scripts/time_between_goals.py
 __pycache__/
 *.pyc
 .DS_Store
 .env
 venv/
 node_modules/*
+docs/
