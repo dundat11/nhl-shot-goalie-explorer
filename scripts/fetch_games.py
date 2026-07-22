@@ -6,7 +6,7 @@ Outputs: data/processed/games.csv
 import requests
 import pandas as pd
 from pathlib import Path
-from teams import TEAM_ABBREVS
+from team_scope import TEAMS_TO_FETCH
 
 SEASONS = ["20242025", "20252026"]
 BASE_URL = "https://api-web.nhle.com/v1"
@@ -41,7 +41,7 @@ def extract_home_games(games: list[dict], team_abbrev: str) -> list[dict]:
 def main():
     all_home_games = []
 
-    for team_abbrev in TEAM_ABBREVS:
+    for team_abbrev in TEAMS_TO_FETCH:
         for season in SEASONS:
             print(f"Fetching schedule for {team_abbrev} — season {season}...")
             try:
