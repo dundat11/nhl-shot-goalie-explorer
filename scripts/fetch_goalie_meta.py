@@ -49,7 +49,7 @@ def main():
         try:
             catches = fetch_catches(gid)
             cache[str(gid)] = catches or "L"
-        except requests.HTTPError as e:
+        except requests.exceptions.RequestException as e:
             print(f"  Warning: could not fetch goalie {gid}: {e}")
             cache[str(gid)] = "L"
 

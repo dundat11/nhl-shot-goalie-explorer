@@ -49,7 +49,7 @@ def main():
                 home_games = extract_home_games(games, team_abbrev)
                 print(f"  Found {len(home_games)} home regular season games")
                 all_home_games.extend(home_games)
-            except requests.HTTPError as e:
+            except requests.exceptions.RequestException as e:
                 print(f"  Warning: could not fetch {team_abbrev} season {season}: {e}")
 
     if not all_home_games:
