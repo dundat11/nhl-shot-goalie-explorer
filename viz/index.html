@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Utah Mammoth — Home Ice Shot Study</title>
+  <title>NHL Shot Location & Goalie Tendency Explorer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,18 +13,12 @@
 
   <header>
     <div class="header-inner">
-      <img src="https://assets.nhle.com/logos/nhl/svg/UTA_light.svg"
-           alt="Utah Mammoth"
-           class="team-logo"
-           onerror="this.style.display='none'">
+      <img id="team-logo" src="" alt="" class="team-logo" onerror="this.style.display='none'">
       <div>
-        <h1>Utah Mammoth</h1>
-        <p class="subtitle">Home Ice Shot Location Study</p>
+        <h1 id="team-title">Loading…</h1>
+        <p class="subtitle" id="team-arena"></p>
       </div>
     </div>
-    <p class="hypothesis">
-      Do shots from in front of the home bench convert at a higher rate — for <em>both</em> teams?
-    </p>
     <!-- Mobile menu trigger -->
     <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open options">
       <span></span><span></span><span></span>
@@ -43,10 +37,21 @@
     </div>
 
     <div class="control-group">
+      <label>Team</label>
+      <select id="filter-team" class="game-select"></select>
+    </div>
+    <div class="control-group">
+      <label>Goalie</label>
+      <select id="filter-goalie" class="game-select">
+        <option value="all">All goalies</option>
+      </select>
+    </div>
+
+    <div class="control-group">
       <label>Shooter</label>
       <div class="btn-group" id="filter-shooter">
         <button class="btn active" data-value="all">All</button>
-        <button class="btn" data-value="utah">Utah</button>
+        <button class="btn" data-value="home">Home</button>
         <button class="btn" data-value="opponent">Opponent</button>
       </div>
     </div>
@@ -103,9 +108,6 @@
   <div class="viz-wrapper">
     <div class="rink-container">
       <svg id="rink"></svg>
-      <div class="bench-callout">
-        <span class="callout-dot"></span>Home bench (left, broadcast view)
-      </div>
     </div>
 
     <div class="legend" id="legend">
@@ -129,13 +131,13 @@
       <span class="stat-value" id="stat-rate">—</span>
       <span class="stat-label" id="label-rate">Overall Rate</span>
     </div>
-    <div class="stat bench-stat">
+    <div class="stat">
       <span class="stat-value" id="stat-bench-rate">—</span>
-      <span class="stat-label" id="label-bench-rate">Bench Side Rate</span>
+      <span class="stat-label" id="label-bench-rate">Home Team Rate</span>
     </div>
     <div class="stat">
       <span class="stat-value" id="stat-far-rate">—</span>
-      <span class="stat-label" id="label-far-rate">Far Side Rate</span>
+      <span class="stat-label" id="label-far-rate">Opponent Rate</span>
     </div>
     <div class="stat">
       <span class="stat-value" id="stat-diff">—</span>
