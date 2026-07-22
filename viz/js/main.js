@@ -277,6 +277,12 @@ document.getElementById('filter-team').addEventListener('change', e => {
   loadTeam(e.target.value)
 })
 
+document.getElementById('filter-game').addEventListener('change', e => {
+  state.game = e.target.value
+  clearSelection()
+  render()
+})
+
 Promise.all([
   d3.json(TEAMS_PATH),
   d3.json(GOALIES_PATH),
