@@ -2,8 +2,10 @@ import * as d3 from 'd3'
 import { drawRink, drawGrid, toggleGrid } from './rink.js'
 import { initLayers, renderHeatmap, renderScatter, setSelectMode, clearSelection, getSelectionStats } from './heatmap.js'
 
-const DATA_PATH  = `${import.meta.env.BASE_URL}shots_viz.json`
-const GAMES_PATH = `${import.meta.env.BASE_URL}utah_home_games.csv`
+const BASE         = import.meta.env.BASE_URL
+const TEAMS_PATH    = `${BASE}teams.json`
+const GOALIES_PATH  = `${BASE}goalies.json`
+const GAMES_PATH    = `${BASE}games.csv`
 
 // ── SVG ───────────────────────────────────────────────────────────────────────
 const PADDING = 5
@@ -14,13 +16,19 @@ const svg = d3.select('#rink')
 const tooltip = d3.select('#tooltip')
 
 // ── State ─────────────────────────────────────────────────────────────────────
-const state = { shooter: 'all', season: 'all', view: 'heatmap', metric: 'rate', selectZone: false, grid: false, game: 'all' }
+const state = { team: null, goalie: 'all', shooter: 'all', season: 'all', view: 'heatmap', metric: 'rate', selectZone: false, grid: false, game: 'all' }
+
+let _teams        = []
+let _allGames     = []
+let _teamShots    = []
+let _goalies      = []
+let _currentGoalie = null  // set by loadGoalie() in Task 16; unused until then
 
 // ── Filter ────────────────────────────────────────────────────────────────────
 function filterShots(all) {
   return all.filter(d => {
-    if (state.shooter === 'utah'     && !d.isUtahShooting) return false
-    if (state.shooter === 'opponent' &&  d.isUtahShooting) return false
+    if (state.shooter === 'home'     && !d.isHomeShooting) return false
+    if (state.shooter === 'opponent' &&  d.isHomeShooting) return false
     if (state.season  !== 'all'      && String(d.season) !== state.season) return false
     if (state.game    !== 'all'      && String(d.gameId)  !== state.game)  return false
     return true
@@ -104,6 +112,50 @@ function updateSelectStatus(stats) {
     count.textContent = `${stats.zones} zone${stats.zones > 1 ? 's' : ''} selected`
     hint.textContent  = `Selected: ${pct(stats.selected.rate)} · Rest of ice: ${pct(stats.rest.rate)} · ${sign}${pct(stats.diff)}`
   }
+}
+
+// ── Team loader functions ────────────────────────────────────────────────────
+function populateGameOptions(abbrev) {
+  const sel = document.getElementById('filter-game')
+  sel.innerHTML = '<option value="all">All home games</option>'
+  _allGames
+    .filter(g => g.homeTeam === abbrev && (g.gameState === 'OFF' || g.gameState === 'FINAL'))
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .forEach(g => {
+      const opt = document.createElement('option')
+      opt.value = g.gameId
+      const season = g.season === '20242025' ? '24-25' : '25-26'
+      opt.textContent = `${g.date} · ${abbrev} vs ${g.awayTeam} (${season})`
+      sel.appendChild(opt)
+    })
+  state.game = 'all'
+}
+
+function resetGoalieSelect() {
+  const sel = document.getElementById('filter-goalie')
+  sel.innerHTML = '<option value="all">All goalies</option>'
+}
+
+async function loadTeam(abbrev) {
+  const team = _teams.find(t => t.abbrev === abbrev)
+  if (!team) return
+
+  document.getElementById('team-logo').src = team.logoLight
+  document.getElementById('team-logo').alt = team.name
+  document.getElementById('team-title').textContent = team.name
+  document.getElementById('team-arena').textContent = team.arena
+
+  state.team = abbrev
+  state.goalie = 'all'
+  _currentGoalie = null
+  resetGoalieSelect()
+  populateGameOptions(abbrev)
+
+  clearSelection()
+  const shots = await d3.json(`${BASE}teams/${abbrev}.json`)
+  _teamShots = shots
+  _allShots = shots
+  render()
 }
 
 // ── Render ────────────────────────────────────────────────────────────────────
@@ -221,31 +273,34 @@ initLayers(svg)
 wireMobileMenu()
 wireControls()  // wire immediately — controls must work before data arrives
 
-// Load games list for the game selector dropdown
-d3.csv(GAMES_PATH).then(games => {
-  const sel = document.getElementById('filter-game')
-  games
-    .filter(g => g.gameState === 'OFF' || g.gameState === 'FINAL')
-    .sort((a, b) => b.date.localeCompare(a.date))  // newest first
-    .forEach(g => {
-      const opt = document.createElement('option')
-      opt.value = g.gameId
-      const season = g.season === '20242025' ? '24-25' : '25-26'
-      opt.textContent = `${g.date} · UTA vs ${g.awayTeam} (${season})`
-      sel.appendChild(opt)
-    })
-  sel.addEventListener('change', () => {
-    state.game = sel.value
-    clearSelection()
-    render()
-  })
-}).catch(() => {}) // games CSV is optional — dropdown just stays empty
+document.getElementById('filter-team').addEventListener('change', e => {
+  loadTeam(e.target.value)
+})
 
-d3.json(DATA_PATH).then(all => {
-  _allShots = all
-  render()
+Promise.all([
+  d3.json(TEAMS_PATH),
+  d3.json(GOALIES_PATH),
+  d3.csv(GAMES_PATH),
+]).then(([teams, goalies, games]) => {
+  _teams    = teams
+  _goalies  = goalies
+  _allGames = games
+
+  const teamSel = document.getElementById('filter-team')
+  teams.forEach(t => {
+    const opt = document.createElement('option')
+    opt.value = t.abbrev
+    opt.textContent = t.name
+    teamSel.appendChild(opt)
+  })
+
+  const initial = teams[0]?.abbrev
+  if (initial) {
+    teamSel.value = initial
+    loadTeam(initial)
+  }
 }).catch(err => {
-  console.error('Failed to load shot data:', err)
+  console.error('Failed to load team/goalie index:', err)
   svg.append('text')
     .attr('x', 0).attr('y', 0)
     .attr('text-anchor', 'middle')
