@@ -60,47 +60,55 @@ def load_goalie_catches() -> dict:
         return json.load(f)
 
 
+def build_team_datasets(df: pd.DataFrame, team_meta: dict) -> None:
+    TEAMS_DIR.mkdir(parents=True, exist_ok=True)
+    team_index = []
+
+    for abbrev, meta in team_meta.items():
+        if "arena" not in meta:
+            continue  # never seen as a home team in the fetched data — skip
+
+        team_index.append(meta)
+
+        team_games = df[df["homeTeam"] == abbrev]
+        records = [{
+            "gameId": int(row.gameId),
+            "date": row.date,
+            "season": int(row.season),
+            "period": int(row.period),
+            "shootingTeam": row.shootingTeam,
+            "isHomeShooting": bool(row.isHomeShooting),
+            "x": row.x,
+            "y": row.y,
+            "isGoal": bool(row.isGoal),
+            "isOnGoal": True,
+            "shotType": row.shotType,
+            "goalieInNetId": int(row.goalieInNetId) if pd.notna(row.goalieInNetId) else None,
+            "goalieName": row.goalieName,
+        } for row in team_games.itertuples()]
+
+        with (TEAMS_DIR / f"{abbrev}.json").open("w") as f:
+            json.dump(records, f)
+
+    team_index.sort(key=lambda t: t["name"])
+    with TEAMS_OUT.open("w") as f:
+        json.dump(team_index, f, indent=2)
+
+    print(f"Wrote {len(team_index)} team files to {TEAMS_DIR}")
+
+
 def main():
     if not INPUT_CSV.exists():
         print(f"Input not found at {INPUT_CSV}. Run fetch_shots.py first.")
         return
 
+    team_meta = load_team_meta()
+    catches_map = load_goalie_catches()
+
     df = load_shots()
-    print(f"Loaded {len(df)} shots on goal")
+    print(f"Loaded {len(df)} shots on goal across {df['homeTeam'].nunique()} home teams")
 
-    # --- Individual shots for scatter plot ---
-    df["isOnGoal"] = True  # process_data only keeps shots on goal
-    df["shotType"] = df["shotType"].fillna("")
-    shots_out = df[[
-        "gameId", "date", "season", "period", "shootingTeam",
-        "isUtahShooting", "x", "y", "isGoal", "isOnGoal", "isHomeBenchSide", "shotType"
-    ]].to_dict(orient="records")
-
-    with SHOTS_OUT.open("w") as f:
-        json.dump(shots_out, f)
-    print(f"Wrote {len(shots_out)} shot records to {SHOTS_OUT}")
-
-    # --- Zone aggregates ---
-    zones = []
-
-    # Utah shooting at home
-    zones += compute_zone_stats(df[df["isUtahShooting"]], "utah_home_offense")
-    # Opponents shooting at Utah's home rink
-    zones += compute_zone_stats(df[~df["isUtahShooting"]], "utah_home_defense")
-    # All shots on Utah home ice combined
-    zones += compute_zone_stats(df, "utah_home_all")
-
-    with ZONES_OUT.open("w") as f:
-        json.dump(zones, f, indent=2)
-    print(f"Wrote zone stats ({len(zones)} zone records) to {ZONES_OUT}")
-
-    # Quick summary — bench side = top of broadcast (y > 0 in NHL API = y < 0 after negation, x < 0)
-    bench_side = df[df["isHomeBenchSide"]]
-    other_side = df[~df["isHomeBenchSide"]]
-    print(f"\nHome bench side (top boards, left): {len(bench_side)} shots, "
-          f"{bench_side['isGoal'].mean():.3f} conversion rate")
-    print(f"Rest of ice:                        {len(other_side)} shots, "
-          f"{other_side['isGoal'].mean():.3f} conversion rate")
+    build_team_datasets(df, team_meta)
 
 
 if __name__ == "__main__":
