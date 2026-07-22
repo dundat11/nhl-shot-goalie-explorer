@@ -15,8 +15,9 @@ from tqdm import tqdm
 BASE_URL = "https://api-web.nhle.com/v1"
 RAW_DIR = Path(__file__).parent.parent / "data" / "raw"
 PROCESSED_DIR = Path(__file__).parent.parent / "data" / "processed"
-GAMES_CSV = PROCESSED_DIR / "utah_home_games.csv"
+GAMES_CSV = PROCESSED_DIR / "games.csv"
 OUTPUT_CSV = PROCESSED_DIR / "shots_raw.csv"
+TEAM_META_JSON = PROCESSED_DIR / "team_meta.json"
 
 # Shot and goal event type codes used in the NHL play-by-play API
 SHOT_EVENT_TYPES = {
@@ -148,16 +149,22 @@ def main():
         return
 
     games_df = pd.read_csv(GAMES_CSV)
-    # Only process completed games
     completed = games_df[games_df["gameState"].isin(["OFF", "FINAL"])]
-    print(f"Processing {len(completed)} completed home games...")
+    print(f"Processing {len(completed)} completed games across all teams...")
 
     all_shots = []
+    team_meta = {}
+
     for _, game in tqdm(completed.iterrows(), total=len(completed)):
         try:
             pbp = fetch_pbp(int(game["gameId"]))
             shots = extract_shots(pbp, game)
             all_shots.extend(shots)
+
+            for abbrev, meta in extract_team_meta(pbp).items():
+                existing = team_meta.get(abbrev, {})
+                existing.update(meta)
+                team_meta[abbrev] = existing
         except Exception as e:
             print(f"\nError on game {game['gameId']}: {e}")
 
@@ -168,10 +175,13 @@ def main():
     df = pd.DataFrame(all_shots)
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
     df.to_csv(OUTPUT_CSV, index=False)
+
+    with TEAM_META_JSON.open("w") as f:
+        json.dump(team_meta, f, indent=2)
+
     print(f"\nSaved {len(df)} shot events to {OUTPUT_CSV}")
+    print(f"Saved metadata for {len(team_meta)} teams to {TEAM_META_JSON}")
     print(f"Goals: {df['isGoal'].sum()} | Shots on goal: {df['isOnGoal'].sum()}")
-    print(f"Home bench side shots (y<0, x<0): {df['isHomeBenchSide'].sum()} "
-          f"({df['isHomeBenchSide'].mean():.1%} of all shots)")
 
 
 if __name__ == "__main__":
