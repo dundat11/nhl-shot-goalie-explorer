@@ -1,0 +1,1091 @@
+[
+  {
+    "id": 8477424,
+    "name": "Juuse Saros",
+    "catches": "L",
+    "teams": [
+      "NSH"
+    ],
+    "shotsFaced": 3293
+  },
+  {
+    "id": 8478009,
+    "name": "Ilya Sorokin",
+    "catches": "L",
+    "teams": [
+      "NYI"
+    ],
+    "shotsFaced": 3226
+  },
+  {
+    "id": 8476945,
+    "name": "Connor Hellebuyck",
+    "catches": "L",
+    "teams": [
+      "WPG"
+    ],
+    "shotsFaced": 3211
+  },
+  {
+    "id": 8480280,
+    "name": "Jeremy Swayman",
+    "catches": "L",
+    "teams": [
+      "BOS"
+    ],
+    "shotsFaced": 3204
+  },
+  {
+    "id": 8476883,
+    "name": "Andrei Vasilevskiy",
+    "catches": "L",
+    "teams": [
+      "TBL"
+    ],
+    "shotsFaced": 3202
+  },
+  {
+    "id": 8478048,
+    "name": "Igor Shesterkin",
+    "catches": "L",
+    "teams": [
+      "NYR"
+    ],
+    "shotsFaced": 3176
+  },
+  {
+    "id": 8480843,
+    "name": "Lukas Dostal",
+    "catches": "L",
+    "teams": [
+      "ANA"
+    ],
+    "shotsFaced": 3138
+  },
+  {
+    "id": 8478872,
+    "name": "Karel Vejmelka",
+    "catches": "R",
+    "teams": [
+      "UTA"
+    ],
+    "shotsFaced": 3136
+  },
+  {
+    "id": 8481692,
+    "name": "Dustin Wolf",
+    "catches": "L",
+    "teams": [
+      "CGY"
+    ],
+    "shotsFaced": 3108
+  },
+  {
+    "id": 8479406,
+    "name": "Filip Gustavsson",
+    "catches": "L",
+    "teams": [
+      "MIN"
+    ],
+    "shotsFaced": 3071
+  },
+  {
+    "id": 8479979,
+    "name": "Jake Oettinger",
+    "catches": "L",
+    "teams": [
+      "DAL"
+    ],
+    "shotsFaced": 2983
+  },
+  {
+    "id": 8478916,
+    "name": "Joey Daccord",
+    "catches": "L",
+    "teams": [
+      "SEA"
+    ],
+    "shotsFaced": 2909
+  },
+  {
+    "id": 8480313,
+    "name": "Logan Thompson",
+    "catches": "R",
+    "teams": [
+      "WSH"
+    ],
+    "shotsFaced": 2759
+  },
+  {
+    "id": 8480947,
+    "name": "Kevin Lankinen",
+    "catches": "L",
+    "teams": [
+      "VAN"
+    ],
+    "shotsFaced": 2630
+  },
+  {
+    "id": 8475683,
+    "name": "Sergei Bobrovsky",
+    "catches": "L",
+    "teams": [
+      "FLA"
+    ],
+    "shotsFaced": 2627
+  },
+  {
+    "id": 8481519,
+    "name": "Spencer Knight",
+    "catches": "L",
+    "teams": [
+      "CHI",
+      "FLA"
+    ],
+    "shotsFaced": 2595
+  },
+  {
+    "id": 8479973,
+    "name": "Stuart Skinner",
+    "catches": "L",
+    "teams": [
+      "EDM",
+      "PIT"
+    ],
+    "shotsFaced": 2592
+  },
+  {
+    "id": 8475311,
+    "name": "Darcy Kuemper",
+    "catches": "L",
+    "teams": [
+      "LAK"
+    ],
+    "shotsFaced": 2502
+  },
+  {
+    "id": 8478406,
+    "name": "Mackenzie Blackwood",
+    "catches": "L",
+    "teams": [
+      "COL",
+      "SJS"
+    ],
+    "shotsFaced": 2483
+  },
+  {
+    "id": 8476412,
+    "name": "Jordan Binnington",
+    "catches": "L",
+    "teams": [
+      "STL"
+    ],
+    "shotsFaced": 2467
+  },
+  {
+    "id": 8479361,
+    "name": "Joseph Woll",
+    "catches": "L",
+    "teams": [
+      "TOR"
+    ],
+    "shotsFaced": 2437
+  },
+  {
+    "id": 8476999,
+    "name": "Linus Ullmark",
+    "catches": "L",
+    "teams": [
+      "OTT"
+    ],
+    "shotsFaced": 2428
+  },
+  {
+    "id": 8480045,
+    "name": "Ukko-Pekka Luukkonen",
+    "catches": "L",
+    "teams": [
+      "BUF"
+    ],
+    "shotsFaced": 2421
+  },
+  {
+    "id": 8478007,
+    "name": "Elvis Merzlikins",
+    "catches": "L",
+    "teams": [
+      "CBJ"
+    ],
+    "shotsFaced": 2369
+  },
+  {
+    "id": 8474593,
+    "name": "Jacob Markstrom",
+    "catches": "L",
+    "teams": [
+      "NJD"
+    ],
+    "shotsFaced": 2327
+  },
+  {
+    "id": 8478470,
+    "name": "Samuel Montembeault",
+    "catches": "L",
+    "teams": [
+      "MTL"
+    ],
+    "shotsFaced": 2314
+  },
+  {
+    "id": 8476434,
+    "name": "John Gibson",
+    "catches": "L",
+    "teams": [
+      "ANA",
+      "DET"
+    ],
+    "shotsFaced": 2273
+  },
+  {
+    "id": 8477968,
+    "name": "Alex Nedeljkovic",
+    "catches": "L",
+    "teams": [
+      "PIT",
+      "SJS"
+    ],
+    "shotsFaced": 2103
+  },
+  {
+    "id": 8475660,
+    "name": "Cam Talbot",
+    "catches": "L",
+    "teams": [
+      "DET"
+    ],
+    "shotsFaced": 2093
+  },
+  {
+    "id": 8478435,
+    "name": "Dan Vladar",
+    "catches": "L",
+    "teams": [
+      "CGY",
+      "PHI"
+    ],
+    "shotsFaced": 2093
+  },
+  {
+    "id": 8480981,
+    "name": "Joel Hofer",
+    "catches": "L",
+    "teams": [
+      "STL"
+    ],
+    "shotsFaced": 2018
+  },
+  {
+    "id": 8481035,
+    "name": "Samuel Ersson",
+    "catches": "L",
+    "teams": [
+      "PHI"
+    ],
+    "shotsFaced": 1906
+  },
+  {
+    "id": 8478499,
+    "name": "Adin Hill",
+    "catches": "L",
+    "teams": [
+      "VGK"
+    ],
+    "shotsFaced": 1880
+  },
+  {
+    "id": 8482982,
+    "name": "Jet Greaves",
+    "catches": "L",
+    "teams": [
+      "CBJ"
+    ],
+    "shotsFaced": 1878
+  },
+  {
+    "id": 8482821,
+    "name": "Arvid Soderblom",
+    "catches": "L",
+    "teams": [
+      "CHI"
+    ],
+    "shotsFaced": 1861
+  },
+  {
+    "id": 8474596,
+    "name": "Jake Allen",
+    "catches": "L",
+    "teams": [
+      "NJD"
+    ],
+    "shotsFaced": 1853
+  },
+  {
+    "id": 8477465,
+    "name": "Tristan Jarry",
+    "catches": "L",
+    "teams": [
+      "EDM",
+      "PIT"
+    ],
+    "shotsFaced": 1804
+  },
+  {
+    "id": 8476341,
+    "name": "Anton Forsberg",
+    "catches": "L",
+    "teams": [
+      "LAK",
+      "OTT"
+    ],
+    "shotsFaced": 1721
+  },
+  {
+    "id": 8482137,
+    "name": "Yaroslav Askarov",
+    "catches": "R",
+    "teams": [
+      "SJS"
+    ],
+    "shotsFaced": 1699
+  },
+  {
+    "id": 8479312,
+    "name": "Alex Lyon",
+    "catches": "L",
+    "teams": [
+      "BUF",
+      "DET"
+    ],
+    "shotsFaced": 1685
+  },
+  {
+    "id": 8475809,
+    "name": "Scott Wedgewood",
+    "catches": "L",
+    "teams": [
+      "COL",
+      "NSH"
+    ],
+    "shotsFaced": 1671
+  },
+  {
+    "id": 8476932,
+    "name": "Anthony Stolarz",
+    "catches": "L",
+    "teams": [
+      "TOR"
+    ],
+    "shotsFaced": 1663
+  },
+  {
+    "id": 8482487,
+    "name": "Jakub Dobes",
+    "catches": "L",
+    "teams": [
+      "MTL"
+    ],
+    "shotsFaced": 1627
+  },
+  {
+    "id": 8479292,
+    "name": "Charlie Lindgren",
+    "catches": "R",
+    "teams": [
+      "WSH"
+    ],
+    "shotsFaced": 1589
+  },
+  {
+    "id": 8475831,
+    "name": "Philipp Grubauer",
+    "catches": "L",
+    "teams": [
+      "SEA"
+    ],
+    "shotsFaced": 1547
+  },
+  {
+    "id": 8476914,
+    "name": "Joonas Korpisalo",
+    "catches": "L",
+    "teams": [
+      "BOS"
+    ],
+    "shotsFaced": 1544
+  },
+  {
+    "id": 8481020,
+    "name": "Justus Annunen",
+    "catches": "L",
+    "teams": [
+      "COL",
+      "NSH"
+    ],
+    "shotsFaced": 1526
+  },
+  {
+    "id": 8479193,
+    "name": "Casey DeSmith",
+    "catches": "L",
+    "teams": [
+      "DAL"
+    ],
+    "shotsFaced": 1521
+  },
+  {
+    "id": 8479496,
+    "name": "David Rittich",
+    "catches": "L",
+    "teams": [
+      "LAK",
+      "NYI"
+    ],
+    "shotsFaced": 1492
+  },
+  {
+    "id": 8480193,
+    "name": "Daniil Tarasov",
+    "catches": "L",
+    "teams": [
+      "CBJ",
+      "FLA"
+    ],
+    "shotsFaced": 1469
+  },
+  {
+    "id": 8475883,
+    "name": "Frederik Andersen",
+    "catches": "L",
+    "teams": [
+      "CAR"
+    ],
+    "shotsFaced": 1395
+  },
+  {
+    "id": 8481611,
+    "name": "Pyotr Kochetkov",
+    "catches": "L",
+    "teams": [
+      "CAR"
+    ],
+    "shotsFaced": 1362
+  },
+  {
+    "id": 8471734,
+    "name": "Jonathan Quick",
+    "catches": "L",
+    "teams": [
+      "NYR"
+    ],
+    "shotsFaced": 1328
+  },
+  {
+    "id": 8478971,
+    "name": "Connor Ingram",
+    "catches": "L",
+    "teams": [
+      "EDM",
+      "UTA"
+    ],
+    "shotsFaced": 1321
+  },
+  {
+    "id": 8480382,
+    "name": "Alexandar Georgiev",
+    "catches": "L",
+    "teams": [
+      "COL",
+      "SJS"
+    ],
+    "shotsFaced": 1317
+  },
+  {
+    "id": 8475852,
+    "name": "Petr Mrazek",
+    "catches": "L",
+    "teams": [
+      "ANA",
+      "CHI",
+      "DET"
+    ],
+    "shotsFaced": 1313
+  },
+  {
+    "id": 8475717,
+    "name": "Calvin Pickard",
+    "catches": "L",
+    "teams": [
+      "EDM"
+    ],
+    "shotsFaced": 1259
+  },
+  {
+    "id": 8481668,
+    "name": "Arturs Silovs",
+    "catches": "L",
+    "teams": [
+      "PIT",
+      "VAN"
+    ],
+    "shotsFaced": 1259
+  },
+  {
+    "id": 8477970,
+    "name": "Vitek Vanecek",
+    "catches": "L",
+    "teams": [
+      "FLA",
+      "SJS",
+      "UTA"
+    ],
+    "shotsFaced": 1230
+  },
+  {
+    "id": 8477992,
+    "name": "Jonas Johansson",
+    "catches": "L",
+    "teams": [
+      "TBL"
+    ],
+    "shotsFaced": 1224
+  },
+  {
+    "id": 8477480,
+    "name": "Eric Comrie",
+    "catches": "L",
+    "teams": [
+      "WPG"
+    ],
+    "shotsFaced": 1201
+  },
+  {
+    "id": 8477967,
+    "name": "Thatcher Demko",
+    "catches": "L",
+    "teams": [
+      "VAN"
+    ],
+    "shotsFaced": 1084
+  },
+  {
+    "id": 8482661,
+    "name": "Jesper Wallstedt",
+    "catches": "L",
+    "teams": [
+      "MIN"
+    ],
+    "shotsFaced": 1072
+  },
+  {
+    "id": 8473503,
+    "name": "James Reimer",
+    "catches": "L",
+    "teams": [
+      "ANA",
+      "BUF",
+      "OTT"
+    ],
+    "shotsFaced": 952
+  },
+  {
+    "id": 8483548,
+    "name": "Brandon Bussi",
+    "catches": "R",
+    "teams": [
+      "CAR"
+    ],
+    "shotsFaced": 913
+  },
+  {
+    "id": 8481033,
+    "name": "Akira Schmid",
+    "catches": "L",
+    "teams": [
+      "VGK"
+    ],
+    "shotsFaced": 881
+  },
+  {
+    "id": 8478024,
+    "name": "Ville Husso",
+    "catches": "L",
+    "teams": [
+      "ANA",
+      "DET"
+    ],
+    "shotsFaced": 870
+  },
+  {
+    "id": 8482445,
+    "name": "Devin Cooley",
+    "catches": "L",
+    "teams": [
+      "CGY"
+    ],
+    "shotsFaced": 847
+  },
+  {
+    "id": 8478492,
+    "name": "Ilya Samsonov",
+    "catches": "L",
+    "teams": [
+      "VGK"
+    ],
+    "shotsFaced": 752
+  },
+  {
+    "id": 8482447,
+    "name": "Leevi Meril\u00e4inen",
+    "catches": "L",
+    "teams": [
+      "OTT"
+    ],
+    "shotsFaced": 752
+  },
+  {
+    "id": 8483710,
+    "name": "Dennis Hildeby",
+    "catches": "L",
+    "teams": [
+      "TOR"
+    ],
+    "shotsFaced": 706
+  },
+  {
+    "id": 8470594,
+    "name": "Marc-Andre Fleury",
+    "catches": "L",
+    "teams": [
+      "MIN"
+    ],
+    "shotsFaced": 670
+  },
+  {
+    "id": 8478905,
+    "name": "Ivan Fedotov",
+    "catches": "L",
+    "teams": [
+      "PHI"
+    ],
+    "shotsFaced": 624
+  },
+  {
+    "id": 8484268,
+    "name": "Nikita Tolopilo",
+    "catches": "L",
+    "teams": [
+      "VAN"
+    ],
+    "shotsFaced": 608
+  },
+  {
+    "id": 8481551,
+    "name": "Colten Ellis",
+    "catches": "L",
+    "teams": [
+      "BUF"
+    ],
+    "shotsFaced": 455
+  },
+  {
+    "id": 8482783,
+    "name": "Aleksei Kolosov",
+    "catches": "L",
+    "teams": [
+      "PHI"
+    ],
+    "shotsFaced": 453
+  },
+  {
+    "id": 8484170,
+    "name": "Jacob Fowler",
+    "catches": "L",
+    "teams": [
+      "MTL"
+    ],
+    "shotsFaced": 448
+  },
+  {
+    "id": 8482446,
+    "name": "Joel Blomqvist",
+    "catches": "L",
+    "teams": [
+      "PIT"
+    ],
+    "shotsFaced": 425
+  },
+  {
+    "id": 8479394,
+    "name": "Carter Hart",
+    "catches": "L",
+    "teams": [
+      "VGK"
+    ],
+    "shotsFaced": 422
+  },
+  {
+    "id": 8477405,
+    "name": "Marcus Hogberg",
+    "catches": "L",
+    "teams": [
+      "NYI"
+    ],
+    "shotsFaced": 342
+  },
+  {
+    "id": 8480051,
+    "name": "Cayden Primeau",
+    "catches": "L",
+    "teams": [
+      "MTL",
+      "TOR"
+    ],
+    "shotsFaced": 330
+  },
+  {
+    "id": 8477484,
+    "name": "Spencer Martin",
+    "catches": "L",
+    "teams": [
+      "CAR",
+      "NYR"
+    ],
+    "shotsFaced": 322
+  },
+  {
+    "id": 8473575,
+    "name": "Semyon Varlamov",
+    "catches": "L",
+    "teams": [
+      "NYI"
+    ],
+    "shotsFaced": 262
+  },
+  {
+    "id": 8482221,
+    "name": "Devon Levi",
+    "catches": "L",
+    "teams": [
+      "BUF"
+    ],
+    "shotsFaced": 258
+  },
+  {
+    "id": 8484312,
+    "name": "Georgi Romanov",
+    "catches": "L",
+    "teams": [
+      "SJS"
+    ],
+    "shotsFaced": 219
+  },
+  {
+    "id": 8482076,
+    "name": "Nico Daws",
+    "catches": "L",
+    "teams": [
+      "NJD"
+    ],
+    "shotsFaced": 201
+  },
+  {
+    "id": 8482761,
+    "name": "Carl Lindbom",
+    "catches": "L",
+    "teams": [
+      "VGK"
+    ],
+    "shotsFaced": 189
+  },
+  {
+    "id": 8476899,
+    "name": "Matt Murray",
+    "catches": "L",
+    "teams": [
+      "SEA",
+      "TOR"
+    ],
+    "shotsFaced": 160
+  },
+  {
+    "id": 8483530,
+    "name": "Jaxson Stauber",
+    "catches": "L",
+    "teams": [
+      "UTA"
+    ],
+    "shotsFaced": 158
+  },
+  {
+    "id": 8483532,
+    "name": "Clay Stevenson",
+    "catches": "L",
+    "teams": [
+      "WSH"
+    ],
+    "shotsFaced": 139
+  },
+  {
+    "id": 8481529,
+    "name": "Trent Miner",
+    "catches": "L",
+    "teams": [
+      "COL"
+    ],
+    "shotsFaced": 138
+  },
+  {
+    "id": 8474682,
+    "name": "Dustin Tokarski",
+    "catches": "L",
+    "teams": [
+      "CAR"
+    ],
+    "shotsFaced": 132
+  },
+  {
+    "id": 8483703,
+    "name": "Sergei Murashov",
+    "catches": "R",
+    "teams": [
+      "PIT"
+    ],
+    "shotsFaced": 116
+  },
+  {
+    "id": 8482123,
+    "name": "Drew Commesso",
+    "catches": "L",
+    "teams": [
+      "CHI"
+    ],
+    "shotsFaced": 111
+  },
+  {
+    "id": 8482193,
+    "name": "Dylan Garand",
+    "catches": "L",
+    "teams": [
+      "NYR"
+    ],
+    "shotsFaced": 96
+  },
+  {
+    "id": 8483668,
+    "name": "Nikke Kokko",
+    "catches": "L",
+    "teams": [
+      "SEA"
+    ],
+    "shotsFaced": 88
+  },
+  {
+    "id": 8482515,
+    "name": "Artur Akhtyamov",
+    "catches": "L",
+    "teams": [
+      "TOR"
+    ],
+    "shotsFaced": 82
+  },
+  {
+    "id": 8481544,
+    "name": "Mads Sogaard",
+    "catches": "L",
+    "teams": [
+      "OTT"
+    ],
+    "shotsFaced": 76
+  },
+  {
+    "id": 8483114,
+    "name": "Thomas Milic",
+    "catches": "L",
+    "teams": [
+      "WPG"
+    ],
+    "shotsFaced": 62
+  },
+  {
+    "id": 8484910,
+    "name": "Victor Ostman",
+    "catches": "L",
+    "teams": [
+      "SEA"
+    ],
+    "shotsFaced": 47
+  },
+  {
+    "id": 8477990,
+    "name": "Brandon Halverson",
+    "catches": "L",
+    "teams": [
+      "TBL"
+    ],
+    "shotsFaced": 45
+  },
+  {
+    "id": 8477831,
+    "name": "Pheonix Copley",
+    "catches": "L",
+    "teams": [
+      "LAK"
+    ],
+    "shotsFaced": 40
+  },
+  {
+    "id": 8480238,
+    "name": "Jiri Patera",
+    "catches": "L",
+    "teams": [
+      "VAN"
+    ],
+    "shotsFaced": 40
+  },
+  {
+    "id": 8480819,
+    "name": "Jakub Skarek",
+    "catches": "L",
+    "teams": [
+      "NYI"
+    ],
+    "shotsFaced": 39
+  },
+  {
+    "id": 8482411,
+    "name": "Hunter Shepard",
+    "catches": "L",
+    "teams": [
+      "OTT",
+      "WSH"
+    ],
+    "shotsFaced": 38
+  },
+  {
+    "id": 8480191,
+    "name": "Matt Villalta",
+    "catches": "L",
+    "teams": [
+      "UTA"
+    ],
+    "shotsFaced": 31
+  },
+  {
+    "id": 8480885,
+    "name": "Olivier Rodrigue",
+    "catches": "L",
+    "teams": [
+      "EDM"
+    ],
+    "shotsFaced": 29
+  },
+  {
+    "id": 8481707,
+    "name": "Erik Portillo",
+    "catches": "L",
+    "teams": [
+      "LAK"
+    ],
+    "shotsFaced": 29
+  },
+  {
+    "id": 8482949,
+    "name": "Arsenii Sergeev",
+    "catches": "L",
+    "teams": [
+      "CGY"
+    ],
+    "shotsFaced": 28
+  },
+  {
+    "id": 8475839,
+    "name": "Louis Domingue",
+    "catches": "R",
+    "teams": [
+      "NYR"
+    ],
+    "shotsFaced": 27
+  },
+  {
+    "id": 8476316,
+    "name": "Laurent Brossoit",
+    "catches": "L",
+    "teams": [
+      "SJS"
+    ],
+    "shotsFaced": 24
+  },
+  {
+    "id": 8478848,
+    "name": "Ales Stezka",
+    "catches": "L",
+    "teams": [
+      "SEA"
+    ],
+    "shotsFaced": 23
+  },
+  {
+    "id": 8478039,
+    "name": "Kaapo Kahkonen",
+    "catches": "L",
+    "teams": [
+      "COL"
+    ],
+    "shotsFaced": 20
+  },
+  {
+    "id": 8482657,
+    "name": "Sebastian Cossa",
+    "catches": "L",
+    "teams": [
+      "DET"
+    ],
+    "shotsFaced": 14
+  },
+  {
+    "id": 8483746,
+    "name": "Vyacheslav Buteyets",
+    "catches": "L",
+    "teams": [
+      "ANA"
+    ],
+    "shotsFaced": 13
+  },
+  {
+    "id": 8484293,
+    "name": "Yaniv Perets",
+    "catches": "L",
+    "teams": [
+      "CAR"
+    ],
+    "shotsFaced": 7
+  },
+  {
+    "id": 8480022,
+    "name": "Michael DiPietro",
+    "catches": "L",
+    "teams": [
+      "BOS"
+    ],
+    "shotsFaced": 2
+  },
+  {
+    "id": 8482668,
+    "name": "Tristan Lennox",
+    "catches": "L",
+    "teams": [
+      "NYI"
+    ],
+    "shotsFaced": 2
+  }
+]
