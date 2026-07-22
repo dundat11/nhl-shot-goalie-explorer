@@ -21,6 +21,20 @@ X_BINS = np.linspace(-100, 100, 41)   # 5-unit bins
 Y_BINS = np.linspace(-42.5, 42.5, 18) # ~5-unit bins
 
 
+def compute_physical_side(x: float, y: float) -> str | None:
+    """
+    Physical left/right side of the net, relative to the goalie's own body,
+    derived from which end of the ice the shot's x-coordinate places the net at.
+    Operates on the same x/y convention already used elsewhere in this pipeline
+    (NHL raw x, and the display-oriented y already negated by load_shots()).
+    """
+    if x == 0 or y == 0:
+        return None
+    net_end = 1 if x > 0 else -1
+    y_sign = 1 if y > 0 else -1
+    return "right" if y_sign == net_end else "left"
+
+
 def load_shots() -> pd.DataFrame:
     df = pd.read_csv(INPUT_CSV)
     # Only use regular time + OT, exclude shootouts
