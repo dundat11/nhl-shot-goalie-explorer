@@ -26,9 +26,6 @@ SHOT_EVENT_TYPES = {
     "goal",
 }
 
-# Home bench: top boards from broadcast view = negative Y in NHL coordinates.
-# Broadcast camera sits at bottom; bench runs along top boards, left side (x < 0).
-
 
 def fetch_pbp(game_id: int) -> dict:
     cache_path = RAW_DIR / f"{game_id}.json"
@@ -49,11 +46,48 @@ def fetch_pbp(game_id: int) -> dict:
     return data
 
 
+def compute_home_shooting(shooting_team: str, home_team: str) -> bool:
+    return shooting_team == home_team
+
+
+def compute_defending_team(is_home_shooting: bool, home_team: str, away_team: str) -> str:
+    return away_team if is_home_shooting else home_team
+
+
+def resolve_goalie_name(roster_spots: list[dict], goalie_id) -> str:
+    if goalie_id is None:
+        return ""
+    for r in roster_spots:
+        if r.get("playerId") == goalie_id:
+            first = r.get("firstName", {}).get("default", "")
+            last = r.get("lastName", {}).get("default", "")
+            return f"{first} {last}".strip()
+    return ""
+
+
+def extract_team_meta(pbp: dict) -> dict:
+    venue = pbp.get("venue", {}).get("default", "")
+    out = {}
+    for side in ("homeTeam", "awayTeam"):
+        t = pbp.get(side, {})
+        abbrev = t.get("abbrev")
+        if not abbrev:
+            continue
+        out[abbrev] = {
+            "abbrev": abbrev,
+            "name": t.get("commonName", {}).get("default", abbrev),
+            "logoLight": t.get("logo", ""),
+            "logoDark": t.get("darkLogo", ""),
+        }
+        if side == "homeTeam":
+            out[abbrev]["arena"] = venue
+    return out
+
+
 def extract_shots(pbp: dict, game_meta: dict) -> list[dict]:
     shots = []
     plays = pbp.get("plays", [])
-    home_team = pbp.get("homeTeam", {}).get("abbrev", "")
-    away_team = pbp.get("awayTeam", {}).get("abbrev", "")
+    roster_spots = pbp.get("rosterSpots", [])
 
     for play in plays:
         event_type = play.get("typeDescKey", "")
@@ -67,13 +101,17 @@ def extract_shots(pbp: dict, game_meta: dict) -> list[dict]:
         if x is None or y is None:
             continue
 
-        shooting_team_id = details.get("shootingPlayerId") and play.get("details", {})
-        # The shooting team is identified via the eventOwnerTeamId field
         owner_team_id = details.get("eventOwnerTeamId")
         home_team_id = pbp.get("homeTeam", {}).get("id")
+        home_team = game_meta["homeTeam"]
+        away_team = game_meta["awayTeam"]
 
         shooting_team_abbrev = home_team if owner_team_id == home_team_id else away_team
-        is_utah_shooting = shooting_team_abbrev == "UTA"
+        is_home_shooting = compute_home_shooting(shooting_team_abbrev, home_team)
+        defending_team = compute_defending_team(is_home_shooting, home_team, away_team)
+
+        goalie_id = details.get("goalieInNetId")
+        goalie_name = resolve_goalie_name(roster_spots, goalie_id)
 
         period_desc = play.get("periodDescriptor", {})
         period = period_desc.get("number")
@@ -83,22 +121,22 @@ def extract_shots(pbp: dict, game_meta: dict) -> list[dict]:
             "gameId": game_meta["gameId"],
             "date": game_meta["date"],
             "season": game_meta["season"],
-            "awayTeam": game_meta["awayTeam"],
+            "homeTeam": home_team,
+            "awayTeam": away_team,
             "period": period,
             "periodType": period_type,
             "timeInPeriod": play.get("timeInPeriod"),
             "eventType": event_type,
             "shootingTeam": shooting_team_abbrev,
-            "isUtahShooting": is_utah_shooting,
+            "isHomeShooting": is_home_shooting,
+            "defendingTeam": defending_team,
             "x": x,
             "y": y,
-            # NHL API uses positive y toward the top of the broadcast image.
-            # Bench is at the top of the broadcast (y > 0 in NHL coords, x < 0 for left/home side).
-            "shotSide": "bench" if y > 0 else "booth",
-            "isHomeBenchSide": y > 0 and x < 0,
             "shotType": details.get("shotType", ""),
             "isGoal": event_type == "goal",
             "isOnGoal": event_type in {"shot-on-goal", "goal"},
+            "goalieInNetId": goalie_id,
+            "goalieName": goalie_name,
         })
 
     return shots
