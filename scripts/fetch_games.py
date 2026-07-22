@@ -1,20 +1,16 @@
 """
-Fetch Utah home game IDs from the NHL Stats API for the 2024-25 and 2025-26 seasons.
-Outputs: data/processed/utah_home_games.csv
+Fetch home game IDs for every current NHL team, for the 2024-25 and 2025-26 seasons.
+Outputs: data/processed/games.csv
 """
 
 import requests
 import pandas as pd
 from pathlib import Path
-
-# Utah Hockey Club / Utah Mammoth team abbreviation
-TEAM_ABBREV = "UTA"
+from teams import TEAM_ABBREVS
 
 SEASONS = ["20242025", "20252026"]
-
 BASE_URL = "https://api-web.nhle.com/v1"
-
-OUTPUT_PATH = Path(__file__).parent.parent / "data" / "processed" / "utah_home_games.csv"
+OUTPUT_PATH = Path(__file__).parent.parent / "data" / "processed" / "games.csv"
 
 
 def fetch_schedule(team_abbrev: str, season: str) -> list[dict]:
@@ -45,25 +41,25 @@ def extract_home_games(games: list[dict], team_abbrev: str) -> list[dict]:
 def main():
     all_home_games = []
 
-    for season in SEASONS:
-        print(f"Fetching schedule for {TEAM_ABBREV} — season {season}...")
-        try:
-            games = fetch_schedule(TEAM_ABBREV, season)
-            home_games = extract_home_games(games, TEAM_ABBREV)
-            print(f"  Found {len(home_games)} home regular season games")
-            all_home_games.extend(home_games)
-        except requests.HTTPError as e:
-            print(f"  Warning: could not fetch season {season}: {e}")
+    for team_abbrev in TEAM_ABBREVS:
+        for season in SEASONS:
+            print(f"Fetching schedule for {team_abbrev} — season {season}...")
+            try:
+                games = fetch_schedule(team_abbrev, season)
+                home_games = extract_home_games(games, team_abbrev)
+                print(f"  Found {len(home_games)} home regular season games")
+                all_home_games.extend(home_games)
+            except requests.HTTPError as e:
+                print(f"  Warning: could not fetch {team_abbrev} season {season}: {e}")
 
     if not all_home_games:
-        print("No games found. Check team abbreviation and season codes.")
+        print("No games found. Check team abbreviations and season codes.")
         return
 
     df = pd.DataFrame(all_home_games)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(OUTPUT_PATH, index=False)
-    print(f"\nSaved {len(df)} home games to {OUTPUT_PATH}")
-    print(df[["date", "season", "awayTeam", "gameState"]].to_string(index=False))
+    print(f"\nSaved {len(df)} home games across {df['homeTeam'].nunique()} teams to {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":
