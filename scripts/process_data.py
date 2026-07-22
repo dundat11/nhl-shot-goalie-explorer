@@ -97,6 +97,52 @@ def build_team_datasets(df: pd.DataFrame, team_meta: dict) -> None:
     print(f"Wrote {len(team_index)} team files to {TEAMS_DIR}")
 
 
+def build_goalie_datasets(df: pd.DataFrame, team_meta: dict, catches_map: dict) -> None:
+    goalie_shots = df[df["goalieInNetId"].notna()].copy()
+    goalie_shots["goalieInNetId"] = goalie_shots["goalieInNetId"].astype(int)
+
+    GOALIES_DIR.mkdir(parents=True, exist_ok=True)
+    goalie_index = []
+
+    for goalie_id, g in goalie_shots.groupby("goalieInNetId"):
+        name = next((n for n in g["goalieName"] if n), f"Goalie {goalie_id}")
+        catches = catches_map.get(str(goalie_id), "L")
+        teams = sorted(g["defendingTeam"].unique().tolist())
+
+        records = [{
+            "gameId": int(row.gameId),
+            "date": row.date,
+            "season": int(row.season),
+            "period": int(row.period),
+            "shootingTeam": row.shootingTeam,
+            "isHomeShooting": bool(row.isHomeShooting),
+            "x": row.x,
+            "y": row.y,
+            "isGoal": bool(row.isGoal),
+            "isOnGoal": True,
+            "shotType": row.shotType,
+            "atArena": team_meta.get(row.homeTeam, {}).get("arena", ""),
+            "physicalSide": compute_physical_side(row.x, row.y),
+        } for row in g.itertuples()]
+
+        with (GOALIES_DIR / f"{goalie_id}.json").open("w") as f:
+            json.dump(records, f)
+
+        goalie_index.append({
+            "id": int(goalie_id),
+            "name": name,
+            "catches": catches,
+            "teams": teams,
+            "shotsFaced": len(records),
+        })
+
+    goalie_index.sort(key=lambda g: -g["shotsFaced"])
+    with GOALIES_OUT.open("w") as f:
+        json.dump(goalie_index, f, indent=2)
+
+    print(f"Wrote {len(goalie_index)} goalie files to {GOALIES_DIR}")
+
+
 def main():
     if not INPUT_CSV.exists():
         print(f"Input not found at {INPUT_CSV}. Run fetch_shots.py first.")
@@ -109,6 +155,7 @@ def main():
     print(f"Loaded {len(df)} shots on goal across {df['homeTeam'].nunique()} home teams")
 
     build_team_datasets(df, team_meta)
+    build_goalie_datasets(df, team_meta, catches_map)
 
 
 if __name__ == "__main__":
