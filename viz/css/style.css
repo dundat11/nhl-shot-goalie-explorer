@@ -12,7 +12,6 @@
   --text-dim: #444;
   --hot: #ff4d00;
   --cold: #1a6fba;
-  --bench-color: #2E6DB4;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -64,20 +63,6 @@ h1 {
   text-transform: uppercase;
   text-align: left;
   margin-top: 0.2rem;
-}
-
-.hypothesis {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  max-width: 500px;
-  margin: 0 auto;
-  line-height: 1.5;
-}
-
-.hypothesis em {
-  color: var(--text);
-  font-style: normal;
-  font-weight: 600;
 }
 
 /* ── Mobile menu button (hidden on desktop) ── */
@@ -180,26 +165,6 @@ h1 {
 
 #rink { width: 100%; display: block; }
 
-.bench-callout {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.7rem;
-  color: var(--bench-color);
-  letter-spacing: 0.08em;
-  margin-top: 0.4rem;
-  padding-left: 0.25rem;
-  opacity: 0.8;
-}
-
-.callout-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--bench-color);
-  flex-shrink: 0;
-}
-
 /* ── Legend ── */
 .legend {
   display: flex;
@@ -243,16 +208,12 @@ h1 {
   flex: 1;
 }
 
-.stat.bench-stat { border-color: var(--bench-color); }
-
 .stat-value {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--gold);
   line-height: 1;
 }
-
-.stat.bench-stat .stat-value { color: var(--bench-color); }
 
 .stat-label {
   font-size: 0.62rem;
@@ -289,14 +250,6 @@ h1 {
 .rink-crease { fill: #b8d9ef; opacity: 0.8; stroke: #2980b9; stroke-width: 0.3; }
 .rink-net { fill: #888; }
 .rink-dot { fill: #d63031; opacity: 0.75; }
-.rink-bench-line { stroke: #2E6DB4; stroke-width: 2; stroke-linecap: round; }
-.rink-bench-label {
-  font-family: 'Inter', sans-serif;
-  font-size: 3.2px;
-  fill: #2E6DB4;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-}
 
 /* ── Game selector ── */
 .game-select {
@@ -408,8 +361,6 @@ h1 {
   .header-inner { margin-bottom: 0; }
 
   h1 { font-size: 1.3rem; }
-
-  .hypothesis { font-size: 0.78rem; margin: 0; max-width: none; }
 
   /* Show hamburger */
   .mobile-menu-btn { display: flex; }
@@ -537,7 +488,6 @@ h1 {
 /* ── Landscape phone: keep rink wide, reduce vertical padding ── */
 @media (max-width: 900px) and (orientation: landscape) {
   header { padding: 0.75rem 3.5rem 0.75rem 1rem; }
-  .hypothesis { display: none; }
   .viz-wrapper { padding: 0 0.5rem; }
 
   .stats-bar {
