@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="NHL Shot Location & Goalie Tendency Explorer logo" width="160">
+</p>
+
 # NHL Shot Location & Goalie Tendency Explorer
 
 An interactive, league-wide tool for exploring NHL shot location data and goalie shooting-side
