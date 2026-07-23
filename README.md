@@ -73,4 +73,4 @@ automatically scales to match whatever teams you list here. No other code change
 and your fork's own scheduled GitHub Actions workflow will only ever fetch data for the
 team(s) you've listed.
 
-Selecting a single team will help prevent unnecessary loading data from the NHL API. If you want to load all team data, just use this repo's webpage. 
+Selecting a single team will help prevent unnecessarily loading data from the NHL API. If you want to load all team data, just use this repo's webpage. 
