@@ -290,6 +290,45 @@ h1 {
   font-weight: 600;
 }
 
+/* ── Game selector ── */
+.game-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.78rem;
+  padding: 0.38rem 0.75rem;
+  cursor: pointer;
+  outline: none;
+  max-width: 200px;
+}
+.game-select:focus { border-color: var(--gold); }
+
+@media (max-width: 767px) {
+  .game-select { max-width: none; width: 100%; }
+}
+
+/* ── Coordinate grid ── */
+.grid-line {
+  stroke: #4a5568;
+  stroke-width: 0.4;
+  stroke-dasharray: 2,2;
+  opacity: 0.9;
+}
+.grid-axis {
+  stroke: #718096;
+  stroke-width: 0.7;
+  stroke-dasharray: none;
+  opacity: 1;
+}
+.grid-label {
+  font-family: 'Inter', monospace;
+  font-size: 2.8px;
+  fill: #718096;
+  font-weight: 600;
+}
+
 /* ── Hexbin cells ── */
 .hex-cell { transition: opacity 0.2s; }
 .hex-cell:hover { opacity: 1 !important; }
