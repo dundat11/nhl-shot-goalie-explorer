@@ -1,0 +1,60 @@
+name: Update Shot Data
+
+on:
+  schedule:
+    # Daily at 08:00 UTC, but only Oct-Apr (NHL regular season) — cron month field
+    # lists the months explicitly since the Oct-Apr range wraps the year boundary.
+    - cron: '0 8 * 1,2,3,4,10,11,12 *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache raw game data
+        uses: actions/cache@v4
+        with:
+          path: data/raw
+          key: raw-games-${{ github.run_id }}
+          restore-keys: |
+            raw-games-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch games
+        run: python scripts/fetch_games.py
+
+      - name: Fetch shots
+        run: python scripts/fetch_shots.py
+
+      - name: Fetch goalie metadata
+        run: python scripts/fetch_goalie_meta.py
+
+      - name: Process data
+        run: python scripts/process_data.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/processed
+          if git diff --cached --quiet; then
+            echo "No data changes — skipping commit"
+          else
+            git commit -m "chore: scheduled data refresh"
+            git push
+          fi
