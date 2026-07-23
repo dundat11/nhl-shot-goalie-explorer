@@ -1,66 +1,83 @@
-# Utah Mammoth — Home Ice Shot Location Study
+# NHL Shot Location & Goalie Tendency Explorer
 
-## The Hypothesis
-
-The Utah Mammoth play their home games at the Delta Center in Salt Lake City. The home bench sits on the **left side of the ice from the broadcast perspective**. At home, the Mammoth wear **black uniforms**, which creates a high-contrast visual environment against the white ice surface and the bench/boards background.
-
-The theory being tested is this repository is:
-
-> **Shots taken from the area in front of the home bench have a measurably higher goal-scoring rate — for both teams — on Utah Mammoth home ice.**
-
-If true, this effect would be visible in the raw geometry of shot locations: a concentration of successful shots near the left-side boards zone, regardless of which team is shooting or which direction they are attacking. The physical location on the ice is the constant, not the attacking direction.
-
-Possible contributing factors:
-- **Bench position** — players emerging from the bench gate create motion and visual noise in a goalie's peripheral field for shots from that side
-- **Uniform contrast** — black jerseys against white ice and boards may affect how a goalie tracks the puck and reads shooter body language from that zone
-- **Combined effect** — neither factor alone but the interaction of both
-
-This is not a settled claim. The goal of this project is to collect the data and let the numbers answer the question.
+An interactive, league-wide tool for exploring NHL shot location data and goalie shooting-side
+tendencies. Switch between any of the 32 NHL teams to see where shots are taken and how likely
+they are to become goals across the ice surface, or drill into a specific goalie to see their
+glove-side vs. blocker-side conversion rates.
 
 ---
 
-## Research Questions
+## Origin
 
-1. Is there a statistically significant shot-to-goal conversion rate difference by physical rink zone on Utah Mammoth home ice?
-2. Does the zone in front of the home bench (left side, broadcast perspective) show elevated conversion rates compared to the same zone on away ice?
-3. Is the elevated rate (if it exists) present for **both** teams on Utah home ice, or only for the visiting team or only for Utah (would factors such as goalie Goalie skill)?
-4. How does Utah's home ice shot distribution compare to league-wide shot location averages?
-5. Does the pattern change between the 2024-25 season (Utah Hockey Club) and the 2025-26 season (Utah Mammoth)?
-6. Is there a period-by-period effect? (Teams switch sides between periods — does the pattern follow the physical bench location or the attacking direction?)
+This project started as a narrower experiment: testing whether shots taken from in front of
+the Utah Mammoth's home bench at the Delta Center converted to goals at a higher rate than
+shots from elsewhere on the ice — for both teams, not just Utah — theorizing that bench-side
+crowd motion and Utah's black home uniforms might affect goalie tracking from that specific
+zone.
+
+That single-team hypothesis-testing version has since grown into this general-purpose tool:
+every NHL team is selectable, each with its own shot map and goalie split data, refreshed
+automatically throughout the season.
 
 ---
 
-## Data Sources
+## What You Can Do
 
-| Source | Used For |
-|---|---|
-| [NHL Stats API](https://api-web.nhle.com) | Play-by-play shot coordinates (x/y), game schedules, team IDs |
-| [MoneyPuck](https://moneypuck.com/data.htm) | League-wide shot data for comparison baseline |
+- **Switch teams** — pick any of the 32 NHL teams from the dropdown; the header logo, team
+  name, and arena update along with the shot map.
+- **Filter shots** — by shooting team (home/opponent), season, specific game, metric
+  (conversion rate vs. shot volume), and view mode (heatmap or scatter).
+- **Select zones** — click hexes on the rink to compare a specific zone's conversion rate
+  against the rest of the ice.
+- **Explore goalie tendencies** — pick a specific goalie from a team's roster to see their
+  glove-side vs. blocker-side shot conversion rates, based on that goalie's full season (home
+  and away appearances).
 
-**Important:** Shot coordinates are preserved in their raw rink reference frame (broadcast perspective). Coordinates are **not** normalized by attacking direction. The home bench occupies a fixed physical location at the Delta Center — that is the spatial constant being studied.
+---
+
+## Data
+
+Shot, game, and goalie data comes from the [NHL Stats API](https://api-web.nhle.com), covering
+the 2024-25 and 2025-26 regular seasons. Raw play-by-play coordinates are preserved exactly as
+the API reports them — not normalized by attacking direction — so shots are plotted at their
+true physical location on the ice.
 
 ### NHL API Coordinate System
 - X-axis: −100 (left end boards) to +100 (right end boards), broadcast perspective
 - Y-axis: −42.5 (bottom boards) to +42.5 (top boards)
-- Home bench: **left side → negative X territory**
+
+A scheduled GitHub Actions workflow (`.github/workflows/update-data.yml`) refreshes this data
+automatically during the NHL season (October through April). Data is not automatically
+refreshed during the offseason (May–September), when no games are being played.
 
 ---
 
-## Seasons Covered
+## Forking for Just Your Team
 
-| Season | Team Name | Notes |
-|---|---|---|
-| 2024-25 | Utah Hockey Club | First season after Arizona Coyotes relocation |
-| 2025-26 | Utah Mammoth | Rebranded name |
+Running this pipeline for the full league makes thousands of NHL API calls per season. If
+you've forked this repo and only care about one team, edit `scripts/team_scope.py` — the only
+file that controls which teams get fetched:
+
+```python
+TEAMS_TO_FETCH = ["COL"]  # e.g. just the Colorado Avalanche
+```
+
+Everything downstream — the data pipeline, the processed output files, and the team switcher —
+automatically scales to match whatever teams you list here. No other code changes are needed,
+and your fork's own scheduled GitHub Actions workflow will only ever fetch data for the
+team(s) you've listed.
 
 ---
 
-## Methodology
+## Running Locally
 
-1. **Fetch** all Utah home game IDs from the NHL schedule API for both seasons
-2. **Pull** play-by-play data for each game; extract all shot events (shots on goal, missed shots, blocked shots)
-3. **Preserve** raw x/y coordinates — no direction normalization
-4. **Tag** each shot: shooting team, is Utah home game, period, shot type, outcome (goal / on goal / missed / blocked)
-5. **Aggregate** into zone bins for heatmap rendering
-6. **Compare** home vs. away, both teams on home ice, and against league averages
-7. **Visualize** with D3.js: interactive rink diagram with heatmap and scatter overlays
+```bash
+pip install -r requirements.txt
+python scripts/fetch_games.py
+python scripts/fetch_shots.py
+python scripts/fetch_goalie_meta.py
+python scripts/process_data.py
+
+npm install
+npm run dev
+```
