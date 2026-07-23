@@ -15,7 +15,7 @@ glove-side vs. blocker-side conversion rates.
 
 This project started as a narrower experiment: testing whether shots taken from in front of
 the Utah Mammoth's home bench at the Delta Center converted to goals at a higher rate than
-shots from elsewhere on the ice — for both teams, not just Utah — theorizing that Utah's black home uniforms might affect a goalie's ability to tracking from that specific
+shots from elsewhere on the ice — for both teams, not just Utah — theorizing that Utah's black home uniforms might affect a goalie's ability to track the puck from that specific
 zone. 
 
 That single-team hypothesis-testing version has since grown into this general-purpose tool:
