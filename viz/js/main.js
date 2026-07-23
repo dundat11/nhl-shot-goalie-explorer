@@ -22,7 +22,7 @@ let _teams        = []
 let _allGames     = []
 let _teamShots    = []
 let _goalies      = []
-let _currentGoalie = null  // set by loadGoalie() in Task 16; unused until then
+let _currentGoalie = null  // set by loadGoalie(); goalie metadata object or null
 
 // ── Filter ────────────────────────────────────────────────────────────────────
 function filterShots(all) {
@@ -59,29 +59,45 @@ function updateStats(shots, selectionStats) {
     return
   }
 
-  // Restore default labels
-  setLabel('label-bench-rate', 'Bench Side Rate')
-  setLabel('label-far-rate',   'Far Side Rate')
-  setLabel('label-rate',       'Overall Rate')
-  setLabel('label-shots',      'Shots on Goal')
-  setLabel('label-goals',      'Goals')
-  setLabel('label-diff',       'Difference')
+  const goalieMode = state.goalie !== 'all'
+
+  if (goalieMode) {
+    setLabel('label-bench-rate', 'Glove Side Rate')
+    setLabel('label-far-rate',   'Blocker Side Rate')
+    setLabel('label-diff',       'Glove vs Blocker')
+  } else {
+    setLabel('label-bench-rate', 'Home Team Rate')
+    setLabel('label-far-rate',   'Opponent Rate')
+    setLabel('label-diff',       'Difference')
+  }
+  setLabel('label-rate',  'Overall Rate')
+  setLabel('label-shots', 'Shots on Goal')
+  setLabel('label-goals', 'Goals')
 
   const onGoal = shots.filter(d => d.isOnGoal)
   const goals  = onGoal.filter(d => d.isGoal)
-  const bench  = onGoal.filter(d => d.isHomeBenchSide)
-  const far    = onGoal.filter(d => !d.isHomeBenchSide)
 
-  const overall   = onGoal.length ? goals.length / onGoal.length : 0
-  const benchRate = bench.length  ? bench.filter(d => d.isGoal).length / bench.length : 0
-  const farRate   = far.length    ? far.filter(d => d.isGoal).length   / far.length   : 0
-  const diff      = benchRate - farRate
+  let groupARate, groupBRate
+  if (goalieMode) {
+    const glove   = _sideForGoalie(onGoal, 'glove')
+    const blocker = _sideForGoalie(onGoal, 'blocker')
+    groupARate = glove.length   ? glove.filter(d => d.isGoal).length   / glove.length   : 0
+    groupBRate = blocker.length ? blocker.filter(d => d.isGoal).length / blocker.length : 0
+  } else {
+    const home = onGoal.filter(d => d.isHomeShooting)
+    const away = onGoal.filter(d => !d.isHomeShooting)
+    groupARate = home.length ? home.filter(d => d.isGoal).length / home.length : 0
+    groupBRate = away.length ? away.filter(d => d.isGoal).length / away.length : 0
+  }
+
+  const overall = onGoal.length ? goals.length / onGoal.length : 0
+  const diff    = groupARate - groupBRate
 
   set('stat-shots',      onGoal.length.toLocaleString())
   set('stat-goals',      goals.length.toLocaleString())
   set('stat-rate',       pct(overall))
-  set('stat-bench-rate', pct(benchRate))
-  set('stat-far-rate',   pct(farRate))
+  set('stat-bench-rate', pct(groupARate))
+  set('stat-far-rate',   pct(groupBRate))
 
   const diffEl = document.getElementById('stat-diff')
   diffEl.textContent = (diff >= 0 ? '+' : '') + pct(diff)
@@ -136,6 +152,46 @@ function resetGoalieSelect() {
   sel.innerHTML = '<option value="all">All goalies</option>'
 }
 
+function populateGoalieOptions(abbrev) {
+  const sel = document.getElementById('filter-goalie')
+  sel.innerHTML = '<option value="all">All goalies</option>'
+  _goalies
+    .filter(g => g.teams.includes(abbrev))
+    .sort((a, b) => b.shotsFaced - a.shotsFaced)
+    .forEach(g => {
+      const opt = document.createElement('option')
+      opt.value = g.id
+      opt.textContent = `${g.name} (${g.shotsFaced} SA)`
+      sel.appendChild(opt)
+    })
+}
+
+async function loadGoalie(goalieId) {
+  if (goalieId === 'all') {
+    _currentGoalie = null
+    state.goalie = 'all'
+    clearSelection()
+    _allShots = _teamShots
+    render()
+    return
+  }
+
+  _currentGoalie = _goalies.find(g => String(g.id) === String(goalieId)) || null
+  state.goalie = goalieId
+
+  clearSelection()
+  const shots = await d3.json(`${BASE}goalies/${goalieId}.json`)
+  _allShots = shots
+  render()
+}
+
+function _sideForGoalie(shots, side) {
+  if (!_currentGoalie) return []
+  const glove = _currentGoalie.catches === 'R' ? 'right' : 'left'
+  const wantSide = side === 'glove' ? glove : (glove === 'right' ? 'left' : 'right')
+  return shots.filter(d => d.physicalSide === wantSide)
+}
+
 async function loadTeam(abbrev) {
   const team = _teams.find(t => t.abbrev === abbrev)
   if (!team) return
@@ -149,6 +205,7 @@ async function loadTeam(abbrev) {
   state.goalie = 'all'
   _currentGoalie = null
   resetGoalieSelect()
+  populateGoalieOptions(abbrev)
   populateGameOptions(abbrev)
 
   clearSelection()
@@ -281,6 +338,10 @@ document.getElementById('filter-game').addEventListener('change', e => {
   state.game = e.target.value
   clearSelection()
   render()
+})
+
+document.getElementById('filter-goalie').addEventListener('change', e => {
+  loadGoalie(e.target.value)
 })
 
 Promise.all([
