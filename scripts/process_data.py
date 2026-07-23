@@ -12,44 +12,135 @@ from pathlib import Path
 
 PROCESSED_DIR = Path(__file__).parent.parent / "data" / "processed"
 INPUT_CSV = PROCESSED_DIR / "shots_raw.csv"
-SHOTS_OUT = PROCESSED_DIR / "shots_viz.json"
-ZONES_OUT = PROCESSED_DIR / "zones_viz.json"
+TEAM_META_JSON = PROCESSED_DIR / "team_meta.json"
+GOALIE_CATCHES_JSON = PROCESSED_DIR / "goalie_catches.json"
+TEAMS_OUT = PROCESSED_DIR / "teams.json"
+TEAMS_DIR = PROCESSED_DIR / "teams"
+GOALIES_OUT = PROCESSED_DIR / "goalies.json"
+GOALIES_DIR = PROCESSED_DIR / "goalies"
 
-# Bin the ice into a grid for zone aggregation
-# NHL rink: x in [-100, 100], y in [-42.5, 42.5]
-X_BINS = np.linspace(-100, 100, 41)   # 5-unit bins
-Y_BINS = np.linspace(-42.5, 42.5, 18) # ~5-unit bins
+
+def compute_physical_side(x: float, y: float) -> str | None:
+    """
+    Physical left/right side of the net, relative to the goalie's own body,
+    derived from which end of the ice the shot's x-coordinate places the net at.
+    Operates on the same x/y convention already used elsewhere in this pipeline
+    (NHL raw x, and the display-oriented y already negated by load_shots()).
+    """
+    if x == 0 or y == 0:
+        return None
+    net_end = 1 if x > 0 else -1
+    y_sign = 1 if y > 0 else -1
+    return "right" if y_sign == net_end else "left"
 
 
 def load_shots() -> pd.DataFrame:
     df = pd.read_csv(INPUT_CSV)
-    # Only use regular time + OT, exclude shootouts
     df = df[df["periodType"].isin(["REG", "OT"])]
-    # Only shots on goal and goals for conversion rate analysis
     df = df[df["isOnGoal"]].copy()
+    df["shotType"] = df["shotType"].fillna("")
+    df["goalieName"] = df["goalieName"].fillna("")
     # NHL API uses positive y toward the top of the broadcast image (mathematical convention).
-    # SVG renders positive y downward, so we negate y here so that display coordinates
-    # match the SVG: y < 0 = top of SVG = bench side (top of broadcast).
+    # SVG renders positive y downward, so we negate y here so that display coordinates match.
     df["y"] = -df["y"]
     return df
 
 
-def compute_zone_stats(df: pd.DataFrame, label: str) -> list[dict]:
-    df = df.copy()
-    df["xBin"] = pd.cut(df["x"], bins=X_BINS, labels=False)
-    df["yBin"] = pd.cut(df["y"], bins=Y_BINS, labels=False)
+def load_team_meta() -> dict:
+    if not TEAM_META_JSON.exists():
+        return {}
+    with TEAM_META_JSON.open() as f:
+        return json.load(f)
 
-    grouped = df.groupby(["xBin", "yBin"]).agg(
-        shots=("isGoal", "count"),
-        goals=("isGoal", "sum"),
-    ).reset_index()
 
-    grouped["conversionRate"] = grouped["goals"] / grouped["shots"]
-    grouped["xCenter"] = X_BINS[grouped["xBin"].astype(int)] + (X_BINS[1] - X_BINS[0]) / 2
-    grouped["yCenter"] = Y_BINS[grouped["yBin"].astype(int)] + (Y_BINS[1] - Y_BINS[0]) / 2
-    grouped["group"] = label
+def load_goalie_catches() -> dict:
+    if not GOALIE_CATCHES_JSON.exists():
+        return {}
+    with GOALIE_CATCHES_JSON.open() as f:
+        return json.load(f)
 
-    return grouped[["xCenter", "yCenter", "shots", "goals", "conversionRate", "group"]].to_dict(orient="records")
+
+def build_team_datasets(df: pd.DataFrame, team_meta: dict) -> None:
+    TEAMS_DIR.mkdir(parents=True, exist_ok=True)
+    team_index = []
+
+    for abbrev, meta in team_meta.items():
+        if "arena" not in meta:
+            continue  # never seen as a home team in the fetched data — skip
+
+        team_index.append(meta)
+
+        team_games = df[df["homeTeam"] == abbrev]
+        records = [{
+            "gameId": int(row.gameId),
+            "date": row.date,
+            "season": int(row.season),
+            "period": int(row.period),
+            "shootingTeam": row.shootingTeam,
+            "isHomeShooting": bool(row.isHomeShooting),
+            "x": row.x,
+            "y": row.y,
+            "isGoal": bool(row.isGoal),
+            "isOnGoal": True,
+            "shotType": row.shotType,
+            "goalieInNetId": int(row.goalieInNetId) if pd.notna(row.goalieInNetId) else None,
+            "goalieName": row.goalieName,
+        } for row in team_games.itertuples()]
+
+        with (TEAMS_DIR / f"{abbrev}.json").open("w") as f:
+            json.dump(records, f)
+
+    team_index.sort(key=lambda t: t["name"])
+    with TEAMS_OUT.open("w") as f:
+        json.dump(team_index, f, indent=2)
+
+    print(f"Wrote {len(team_index)} team files to {TEAMS_DIR}")
+
+
+def build_goalie_datasets(df: pd.DataFrame, team_meta: dict, catches_map: dict) -> None:
+    goalie_shots = df[df["goalieInNetId"].notna()].copy()
+    goalie_shots["goalieInNetId"] = goalie_shots["goalieInNetId"].astype(int)
+
+    GOALIES_DIR.mkdir(parents=True, exist_ok=True)
+    goalie_index = []
+
+    for goalie_id, g in goalie_shots.groupby("goalieInNetId"):
+        name = next((n for n in g["goalieName"] if n), f"Goalie {goalie_id}")
+        catches = catches_map.get(str(goalie_id), "L")
+        teams = sorted(g["defendingTeam"].unique().tolist())
+
+        records = [{
+            "gameId": int(row.gameId),
+            "date": row.date,
+            "season": int(row.season),
+            "period": int(row.period),
+            "shootingTeam": row.shootingTeam,
+            "isHomeShooting": bool(row.isHomeShooting),
+            "x": row.x,
+            "y": row.y,
+            "isGoal": bool(row.isGoal),
+            "isOnGoal": True,
+            "shotType": row.shotType,
+            "atArena": team_meta.get(row.homeTeam, {}).get("arena", ""),
+            "physicalSide": compute_physical_side(row.x, row.y),
+        } for row in g.itertuples()]
+
+        with (GOALIES_DIR / f"{goalie_id}.json").open("w") as f:
+            json.dump(records, f)
+
+        goalie_index.append({
+            "id": int(goalie_id),
+            "name": name,
+            "catches": catches,
+            "teams": teams,
+            "shotsFaced": len(records),
+        })
+
+    goalie_index.sort(key=lambda g: -g["shotsFaced"])
+    with GOALIES_OUT.open("w") as f:
+        json.dump(goalie_index, f, indent=2)
+
+    print(f"Wrote {len(goalie_index)} goalie files to {GOALIES_DIR}")
 
 
 def main():
@@ -57,42 +148,14 @@ def main():
         print(f"Input not found at {INPUT_CSV}. Run fetch_shots.py first.")
         return
 
+    team_meta = load_team_meta()
+    catches_map = load_goalie_catches()
+
     df = load_shots()
-    print(f"Loaded {len(df)} shots on goal")
+    print(f"Loaded {len(df)} shots on goal across {df['homeTeam'].nunique()} home teams")
 
-    # --- Individual shots for scatter plot ---
-    df["isOnGoal"] = True  # process_data only keeps shots on goal
-    df["shotType"] = df["shotType"].fillna("")
-    shots_out = df[[
-        "gameId", "date", "season", "period", "shootingTeam",
-        "isUtahShooting", "x", "y", "isGoal", "isOnGoal", "isHomeBenchSide", "shotType"
-    ]].to_dict(orient="records")
-
-    with SHOTS_OUT.open("w") as f:
-        json.dump(shots_out, f)
-    print(f"Wrote {len(shots_out)} shot records to {SHOTS_OUT}")
-
-    # --- Zone aggregates ---
-    zones = []
-
-    # Utah shooting at home
-    zones += compute_zone_stats(df[df["isUtahShooting"]], "utah_home_offense")
-    # Opponents shooting at Utah's home rink
-    zones += compute_zone_stats(df[~df["isUtahShooting"]], "utah_home_defense")
-    # All shots on Utah home ice combined
-    zones += compute_zone_stats(df, "utah_home_all")
-
-    with ZONES_OUT.open("w") as f:
-        json.dump(zones, f, indent=2)
-    print(f"Wrote zone stats ({len(zones)} zone records) to {ZONES_OUT}")
-
-    # Quick summary — bench side = top of broadcast (y > 0 in NHL API = y < 0 after negation, x < 0)
-    bench_side = df[df["isHomeBenchSide"]]
-    other_side = df[~df["isHomeBenchSide"]]
-    print(f"\nHome bench side (top boards, left): {len(bench_side)} shots, "
-          f"{bench_side['isGoal'].mean():.3f} conversion rate")
-    print(f"Rest of ice:                        {len(other_side)} shots, "
-          f"{other_side['isGoal'].mean():.3f} conversion rate")
+    build_team_datasets(df, team_meta)
+    build_goalie_datasets(df, team_meta, catches_map)
 
 
 if __name__ == "__main__":

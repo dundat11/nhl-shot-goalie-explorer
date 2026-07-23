@@ -4,9 +4,15 @@ on:
   push:
     branches: [master]
   workflow_dispatch:
+    inputs:
+      bump_version:
+        description: 'Bump the app version number (patch) before deploying'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -22,6 +28,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Bump version
+        if: github.event_name == 'workflow_dispatch' && inputs.bump_version == true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          npm version patch --no-git-tag-version
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to $(node -p "require('./package.json').version")"
+          git push
 
       - uses: actions/setup-node@v4
         with:

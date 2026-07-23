@@ -1,7 +1,6 @@
-// Draws the NHL rink in SVG using broadcast coordinate space.
-// NHL coordinates: x [-100, 100] = left end to right end (broadcast)
+// Draws the NHL rink in SVG using raw rink coordinate space (broadcast-style x/y).
+// NHL coordinates: x [-100, 100] = left end to right end
 //                 y [-42.5, 42.5] = top boards to bottom boards
-// Home bench: left side, bottom boards → x < 0, y ≈ +42.5
 
 const RINK_DIMS = {
   cornerR:        28,
@@ -114,22 +113,6 @@ export function drawRink(svg) {
       .attr('x', x + netOx).attr('y', -d.netW / 2)
       .attr('width', d.netD).attr('height', d.netW)
   })
-
-  // Home bench indicator — top boards (y = -42.5), left side (x: -28 to 2)
-  // Broadcast camera is at the bottom, so the bench appears along the top edge.
-  const by = -42.5, bx1 = -28, bx2 = 2
-  g.append('line').attr('class', 'rink-bench-line')
-    .attr('x1', bx1).attr('y1', by).attr('x2', bx2).attr('y2', by)
-    .attr('stroke-width', 1.2)
-  ;[bx1, bx2].forEach(x => {
-    g.append('line').attr('class', 'rink-bench-line')
-      .attr('x1', x).attr('y1', by).attr('x2', x).attr('y2', by + 2)
-      .attr('stroke-width', 0.8)
-  })
-  g.append('text').attr('class', 'rink-bench-label')
-    .attr('x', (bx1 + bx2) / 2).attr('y', by + 4.5)
-    .attr('text-anchor', 'middle')
-    .text('HOME BENCH')
 
   // Boards on top
   g.append('rect').attr('class', 'rink-boards')
