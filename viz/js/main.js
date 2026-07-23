@@ -196,8 +196,10 @@ async function loadTeam(abbrev) {
   const team = _teams.find(t => t.abbrev === abbrev)
   if (!team) return
 
-  document.getElementById('team-logo').src = team.logoLight
-  document.getElementById('team-logo').alt = team.name
+  const logoEl = document.getElementById('team-logo')
+  logoEl.style.display = ''
+  logoEl.src = team.logoLight
+  logoEl.alt = team.name
   document.getElementById('team-title').textContent = team.name
   document.getElementById('team-arena').textContent = team.arena
 
