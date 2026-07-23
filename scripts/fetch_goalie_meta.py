@@ -48,10 +48,12 @@ def main():
     for gid in missing:
         try:
             catches = fetch_catches(gid)
-            cache[str(gid)] = catches or "L"
+            if catches:
+                cache[str(gid)] = catches
+            else:
+                print(f"  Warning: no catches data returned for goalie {gid} — will retry next run")
         except requests.exceptions.RequestException as e:
-            print(f"  Warning: could not fetch goalie {gid}: {e}")
-            cache[str(gid)] = "L"
+            print(f"  Warning: could not fetch goalie {gid}: {e} — will retry next run")
 
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
     with OUTPUT_JSON.open("w") as f:

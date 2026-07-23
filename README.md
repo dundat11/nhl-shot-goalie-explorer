@@ -11,9 +11,8 @@ glove-side vs. blocker-side conversion rates.
 
 This project started as a narrower experiment: testing whether shots taken from in front of
 the Utah Mammoth's home bench at the Delta Center converted to goals at a higher rate than
-shots from elsewhere on the ice — for both teams, not just Utah — theorizing that bench-side
-crowd motion and Utah's black home uniforms might affect goalie tracking from that specific
-zone.
+shots from elsewhere on the ice — for both teams, not just Utah — theorizing that Utah's black home uniforms might affect a goalie's ability to tracking from that specific
+zone. 
 
 That single-team hypothesis-testing version has since grown into this general-purpose tool:
 every NHL team is selectable, each with its own shot map and goalie split data, refreshed
@@ -31,7 +30,10 @@ automatically throughout the season.
   against the rest of the ice.
 - **Explore goalie tendencies** — pick a specific goalie from a team's roster to see their
   glove-side vs. blocker-side shot conversion rates, based on that goalie's full season (home
-  and away appearances).
+  and away appearances). Side is inferred from each shot's position on the ice relative to the
+  net being defended, not from verified goalie facing — this is less reliable for neutral-zone
+  or long-distance shots, so treat the split as a strong-side indicator rather than an exact
+  measurement.
 
 ---
 
@@ -59,7 +61,7 @@ you've forked this repo and only care about one team, edit `scripts/team_scope.p
 file that controls which teams get fetched:
 
 ```python
-TEAMS_TO_FETCH = ["COL"]  # e.g. just the Colorado Avalanche
+TEAMS_TO_FETCH = ["UTA"]  # e.g. just the Utah Mammoth
 ```
 
 Everything downstream — the data pipeline, the processed output files, and the team switcher —
@@ -67,17 +69,4 @@ automatically scales to match whatever teams you list here. No other code change
 and your fork's own scheduled GitHub Actions workflow will only ever fetch data for the
 team(s) you've listed.
 
----
-
-## Running Locally
-
-```bash
-pip install -r requirements.txt
-python scripts/fetch_games.py
-python scripts/fetch_shots.py
-python scripts/fetch_goalie_meta.py
-python scripts/process_data.py
-
-npm install
-npm run dev
-```
+Selecting a single team will help prevent unnecessary loading data from the NHL API. If you want to load all team data, just use this repo's webpage. 

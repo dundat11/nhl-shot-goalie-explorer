@@ -65,10 +65,19 @@ function updateStats(shots, selectionStats) {
     setLabel('label-bench-rate', 'Glove Side Rate')
     setLabel('label-far-rate',   'Blocker Side Rate')
     setLabel('label-diff',       'Glove vs Blocker')
+    const sideNote = 'Side is inferred from shot position on the ice, not verified goalie facing — less reliable for neutral-zone or long shots.'
+    ;['stat-bench-rate', 'label-bench-rate', 'stat-far-rate', 'label-far-rate', 'stat-diff', 'label-diff'].forEach(id => {
+      const el = document.getElementById(id)
+      if (el) el.title = sideNote
+    })
   } else {
     setLabel('label-bench-rate', 'Home Team Rate')
     setLabel('label-far-rate',   'Opponent Rate')
     setLabel('label-diff',       'Difference')
+    ;['stat-bench-rate', 'label-bench-rate', 'stat-far-rate', 'label-far-rate', 'stat-diff', 'label-diff'].forEach(id => {
+      const el = document.getElementById(id)
+      if (el) el.title = ''
+    })
   }
   setLabel('label-rate',  'Overall Rate')
   setLabel('label-shots', 'Shots on Goal')
